@@ -69,7 +69,7 @@ function Register() {
               </div>
             </motion.div>
 
-            <Tabs
+            {/* <Tabs
               value={selectedTab}
               onChange={handleTabChange}
               variant="fullWidth"
@@ -98,7 +98,7 @@ function Register() {
                 className="min-w-0"
                 label="Auth0"
               />
-            </Tabs>
+            </Tabs> */}
 
             {selectedTab === 0 && <JWTRegisterTab />}
             {selectedTab === 1 && <FirebaseRegisterTab />}
