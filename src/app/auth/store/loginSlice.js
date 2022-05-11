@@ -8,26 +8,26 @@ import axios from 'axios'
 export const submitLogin =
   ({ email, password }) =>
     async (dispatch) => {
-      axios.post("http://207.244.250.143/dannydb/login", {
-        email: email,
-        password: password
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        }
-      }).then(res => {
-        console.log(res)
-      })
-      // axios.post(`http://134.122.18.221/api/v1/users/login`,
-      //   { email: "DominacRay@gmail.com", password: "123456789" }, {
+      // axios.post("http://207.244.250.143/dannydb/login", {
+      //   email: email,
+      //   password: password
+      // }, {
       //   headers: {
       //     'Content-Type': 'application/json',
       //     'Accept': 'application/json',
       //   }
-      // }).then(async (res) => {
-      //   console.log("login res", res)
+      // }).then(res => {
+      //   console.log(res)
       // })
+      axios.post(`http://134.122.18.221/api/v1/users/login`,
+        { email: "DominacRay@gmail.com", password: "123456789" }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      }).then(async (res) => {
+        console.log("login res", res)
+      })
       // return jwtService
       //   .signInWithEmailAndPassword(email, password)
       //   .then((user) => {
