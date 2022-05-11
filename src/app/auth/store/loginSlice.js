@@ -8,20 +8,26 @@ import axios from 'axios'
 export const submitLogin =
   ({ email, password }) =>
     async (dispatch) => {
-      const params = {
-        "email": "murtaza.zaheer@gmail.com",
-        "password": "123456"
-      }
-      axios.post("http://207.244.250.143/dannydb/login", params, {
+      axios.post("http://207.244.250.143/dannydb/login", {
+        email: email,
+        password: password
+      }, {
         headers: {
-          'Access-Control-Allow-Origin': 'http://localhost:3000',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range',
-          'Access-Control-Expose-Headers': 'Content-Length,Content-Range'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
         }
       }).then(res => {
         console.log(res)
       })
+      // axios.post(`http://134.122.18.221/api/v1/users/login`,
+      //   { email: "DominacRay@gmail.com", password: "123456789" }, {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Accept': 'application/json',
+      //   }
+      // }).then(async (res) => {
+      //   console.log("login res", res)
+      // })
       // return jwtService
       //   .signInWithEmailAndPassword(email, password)
       //   .then((user) => {
