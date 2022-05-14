@@ -8,26 +8,42 @@ import axios from 'axios'
 export const submitLogin =
   ({ email, password }) =>
     async (dispatch) => {
-      // axios.post("http://207.244.250.143/dannydb/login", {
-      //   email: email,
-      //   password: password
-      // }, {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Accept': 'application/json',
-      //   }
-      // }).then(res => {
-      //   console.log(res)
-      // })
-      axios.post(`http://134.122.18.221/api/v1/users/login`,
-        { email: "DominacRay@gmail.com", password: "123456789" }, {
+      axios.post("https://dannydb.wirelesswavestx.com/login", {
+        email: email,
+        password: password
+      }, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
-      }).then(async (res) => {
-        console.log("login res", res)
+      }).then(res => {
+        console.log(res)
       })
+      // axios.post(`http://134.122.18.221/api/v1/users/login`,
+      //   { email: "DominacRay@gmail.com", password: "123456789" }, {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Accept': 'application/json',
+      //   }
+      // }).then(async (res) => {
+      //   console.log("login res", res)
+      // })
+      // fetch('http://207.244.250.143/dannydb/login', {
+      //   method: 'POST',
+      //   headers: {
+      //     // the content type header value is usually auto-set
+      //     // depending on the request body
+      //     'Content-Type': 'application/json',
+      //     'Accept': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     email: email,
+      //     password: password
+      //   }),
+      //   referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+      //   mode: "cors", // same-origin, no-cors
+      //   credentials: "same-origin",
+      // }).then(res => { console.log(res) })
       // return jwtService
       //   .signInWithEmailAndPassword(email, password)
       //   .then((user) => {
