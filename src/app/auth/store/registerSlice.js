@@ -3,24 +3,59 @@ import { showMessage } from 'app/store/fuse/messageSlice';
 import firebaseService from 'app/services/firebaseService';
 import jwtService from 'app/services/jwtService';
 import { createUserSettingsFirebase, setUserData } from './userSlice';
+import axios from 'axios';
 
 export const submitRegister =
   ({ displayName, password, email }) =>
-  async (dispatch) => {
-    return jwtService
-      .createUser({
-        displayName,
-        password,
-        email,
+    async (dispatch) => {
+      let formdata = new FormData();
+      formdata.append("email", email)
+      formdata.append("name", displayName)
+      formdata.append("password", password)
+
+      axios.post("https://dannydb.wirelesswavestx.com/signup", formdata, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      }).then(result => {
+        console.log(result)
+        if (result.status == 200) {
+          dispatch(setUserData({
+            data: {
+              displayName: displayName,
+              email: email,
+              photoURL: "",
+              settings: {},
+              shortcuts: [],
+            },
+            role: "admin"
+          }));
+          return dispatch(registerSuccess());
+        }
+      }).catch((e) => {
+        console.log(e.response.data)
+        let type = e.response.data == "Email Already Exist" ? "email" : ""
+        return dispatch(registerError([{
+          message: e.response.data,
+          type: type,
+        }]));
       })
-      .then((user) => {
-        dispatch(setUserData(user));
-        return dispatch(registerSuccess());
-      })
-      .catch((errors) => {
-        return dispatch(registerError(errors));
-      });
-  };
+      // return jwtService
+      //   .createUser({
+      //     displayName,
+      //     password,
+      //     email,
+      //   })
+      //   .then((user) => {
+      //     dispatch(setUserData(user));
+      //     return dispatch(registerSuccess());
+      //   })
+      //   .catch((errors) => {
+      //     console.log(errors)
+      //     return dispatch(registerError(errors));
+      //   });
+    };
 
 export const registerWithFirebase = (model) => async (dispatch) => {
   if (!firebaseService.auth) {
@@ -35,6 +70,7 @@ export const registerWithFirebase = (model) => async (dispatch) => {
     .then((response) => {
       dispatch(
         createUserSettingsFirebase({
+
           ...response.user,
           displayName,
           email,

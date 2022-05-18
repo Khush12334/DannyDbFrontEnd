@@ -8,45 +8,38 @@ import axios from 'axios'
 export const submitLogin =
   ({ email, password }) =>
     async (dispatch) => {
-      axios.post("https://dannydb.wirelesswavestx.com/login", {
-        email: email,
-        password: password
-      }, {
+      let formdata = new FormData();
+      formdata.append("email", email)
+      formdata.append("password", password)
+      axios.post("https://dannydb.wirelesswavestx.com/login", formdata, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         }
-      }).then(res => {
+      }).then(result => {
+        let res = result.data.data
+        // const user = {
+        //   ...res,
+        //   displayName: res.name,
+        //   photoURL: '',
+        // }
+        res['displayName'] = res.name
+        res['photoURL'] = ""
+        res['settings'] = {}
+        res['shortcuts'] = []
+
         console.log(res)
+        dispatch(setUserData({
+          data: res,
+          role: "admin"
+        }));
+
+        return dispatch(loginSuccess());
       })
-      // axios.post(`http://134.122.18.221/api/v1/users/login`,
-      //   { email: "DominacRay@gmail.com", password: "123456789" }, {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     'Accept': 'application/json',
-      //   }
-      // }).then(async (res) => {
-      //   console.log("login res", res)
-      // })
-      // fetch('http://207.244.250.143/dannydb/login', {
-      //   method: 'POST',
-      //   headers: {
-      //     // the content type header value is usually auto-set
-      //     // depending on the request body
-      //     'Content-Type': 'application/json',
-      //     'Accept': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     email: email,
-      //     password: password
-      //   }),
-      //   referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
-      //   mode: "cors", // same-origin, no-cors
-      //   credentials: "same-origin",
-      // }).then(res => { console.log(res) })
       // return jwtService
       //   .signInWithEmailAndPassword(email, password)
       //   .then((user) => {
+      //     console.log(user)
       //     dispatch(setUserData(user));
 
       //     return dispatch(loginSuccess());
