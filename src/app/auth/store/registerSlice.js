@@ -28,6 +28,7 @@ export const submitRegister =
               photoURL: "",
               settings: {},
               shortcuts: [],
+              isLogin: true
             },
             role: "admin"
           }));

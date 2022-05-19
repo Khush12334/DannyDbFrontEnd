@@ -11,7 +11,7 @@ import { CacheProvider } from '@emotion/react';
 import { selectCurrLangDir } from 'app/store/i18nSlice';
 import withAppProviders from './withAppProviders';
 import { Auth } from './auth';
-
+import history from '@history';
 // import axios from 'axios';
 /**
  * Axios HTTP Request defaults
@@ -35,6 +35,13 @@ const emotionCacheOptions = {
 
 const App = () => {
   const langDirection = useSelector(selectCurrLangDir);
+  const user = useSelector(({ auth }) => auth.user);
+
+  if (!user.data.isLogin) {
+    history.push({
+      pathname: '/Login',
+    });
+  }
 
   return (
     <CacheProvider value={createCache(emotionCacheOptions[langDirection])}>

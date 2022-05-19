@@ -17,24 +17,36 @@ export const submitLogin =
           'Accept': 'application/json',
         }
       }).then(result => {
-        let res = result.data.data
-        // const user = {
-        //   ...res,
-        //   displayName: res.name,
-        //   photoURL: '',
-        // }
-        res['displayName'] = res.name
-        res['photoURL'] = ""
-        res['settings'] = {}
-        res['shortcuts'] = []
+        console.log(result)
+        if (result.status == 200) {
+          let res = result.data.data
+          res['displayName'] = res.name
+          res['photoURL'] = ""
+          res['settings'] = {}
+          res['shortcuts'] = []
+          res['isLogin'] = true
 
-        console.log(res)
-        dispatch(setUserData({
-          data: res,
-          role: "admin"
-        }));
+          console.log(res)
+          dispatch(setUserData({
+            data: res,
+            role: "admin"
+          }));
 
-        return dispatch(loginSuccess());
+          return dispatch(loginSuccess());
+        }
+      }).catch((e) => {
+        console.log(e.response)
+        return dispatch(loginError(
+          [
+            {
+              message: "Check your email address",
+              type: "email",
+            }, {
+              message: "Check your password",
+              type: "password",
+            }
+          ]
+        ));
       })
       // return jwtService
       //   .signInWithEmailAndPassword(email, password)
@@ -45,6 +57,7 @@ export const submitLogin =
       //     return dispatch(loginSuccess());
       //   })
       //   .catch((errors) => {
+      //     console.log(errors)
       //     return dispatch(loginError(errors));
       //   });
     };

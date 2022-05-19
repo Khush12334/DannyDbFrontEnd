@@ -17,55 +17,55 @@ import TableHead from '@mui/material/TableHead';
 import { removeProducts } from '../store/productsSlice';
 
 const rows = [
+  // {
+  //   id: 'image',
+  //   align: 'left',
+  //   disablePadding: true,
+  //   label: '',
+  //   sort: false,
+  // },
   {
-    id: 'image',
-    align: 'left',
-    disablePadding: true,
-    label: '',
-    sort: false,
-  },
-  {
-    id: 'name',
-    align: 'left',
-    disablePadding: false,
-    label: 'Name',
-    sort: true,
-  },
-  {
-    id: 'categories',
+    id: 'tablename',
     align: 'left',
     disablePadding: false,
-    label: 'Category',
+    label: 'Table Name',
     sort: true,
   },
-  {
-    id: 'priceTaxIncl',
-    align: 'right',
-    disablePadding: false,
-    label: 'Price',
-    sort: true,
-  },
-  {
-    id: 'quantity',
-    align: 'right',
-    disablePadding: false,
-    label: 'Quantity',
-    sort: true,
-  },
-  {
-    id: 'active',
-    align: 'right',
-    disablePadding: false,
-    label: 'Active',
-    sort: true,
-  },
+  // {
+  //   id: 'categories',
+  //   align: 'left',
+  //   disablePadding: false,
+  //   label: 'Category',
+  //   sort: true,
+  // },
+  // {
+  //   id: 'priceTaxIncl',
+  //   align: 'right',
+  //   disablePadding: false,
+  //   label: 'Price',
+  //   sort: true,
+  // },
+  // {
+  //   id: 'quantity',
+  //   align: 'right',
+  //   disablePadding: false,
+  //   label: 'Quantity',
+  //   sort: true,
+  // },
+  // {
+  //   id: 'active',
+  //   align: 'right',
+  //   disablePadding: false,
+  //   label: 'Active',
+  //   sort: true,
+  // },
 ];
 
 function ProductsTableHead(props) {
   const { selectedProductIds } = props;
-  const numSelected = selectedProductIds.length;
+  // const numSelected = selectedProductIds.length;
 
-  const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);
+  // const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -84,7 +84,7 @@ function ProductsTableHead(props) {
   return (
     <TableHead>
       <TableRow className="h-48 sm:h-64">
-        <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
+        {/* <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < props.rowCount}
             checked={props.rowCount !== 0 && numSelected === props.rowCount}
@@ -128,7 +128,7 @@ function ProductsTableHead(props) {
               </Menu>
             </Box>
           )}
-        </TableCell>
+        </TableCell> */}
         {rows.map((row) => {
           return (
             <TableCell
