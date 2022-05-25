@@ -326,15 +326,15 @@ function DetailsTable(props) {
   useEffect(() => {
     // console.log(JSON.parse(routeParams.detailsName))
     // setDataHeader(JSON.parse(routeParams.detailsName))
-    fetchTables()
+    fetchTables("https://dannydb.wirelesswavestx.com/gettable")
   }, [])
 
-  const fetchTables = () => {
+  const fetchTables = (url) => {
     setLoading(true)
     let formdata = new FormData();
     formdata.append("id", 1)
     formdata.append("table_name", routeParams.detailsName)
-    axios.post("https://dannydb.wirelesswavestx.com/gettable", formdata, {
+    axios.post(url, formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -419,7 +419,35 @@ function DetailsTable(props) {
   }
 
   function handleChangePage(event, value) {
+    // let whenDataFetch = ((value + 1) * rowsPerPage) % 30
+
+    // if (whenDataFetch == 0) {
+    //   loadMoreData("https://dannydb.wirelesswavestx.com/gettable?page=" + )
+    //   console.log(data.length)
+    // }
     setPage(value);
+  }
+
+  const loadMoreData = (url) => {
+    setLoading(true)
+    let formdata = new FormData();
+    formdata.append("id", 1)
+    formdata.append("table_name", routeParams.detailsName)
+    axios.post(url, formdata, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    }).then(result => {
+      console.log(result.data.data)
+      if (result.status == 200) {
+        setLoading(false)
+        setData(result.data.data.data.concat())
+        setFilter(result.data.data.data.concat())
+      } else {
+        setLoading(false)
+      }
+    })
   }
 
   function handleChangeRowsPerPage(event) {
@@ -571,6 +599,7 @@ function DetailsTable(props) {
         component="div"
         count={data.length}
         rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[10, 30]}
         page={page}
         backIconButtonProps={{
           'aria-label': 'Previous Page',

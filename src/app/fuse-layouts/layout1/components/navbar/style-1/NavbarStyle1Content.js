@@ -54,6 +54,7 @@ function NavbarStyle1Content(props) {
         {/* <UserNavbarHeader /> */}
 
         <Navigation layout="vertical" />
+
       </StyledContent>
     </Root>
   );

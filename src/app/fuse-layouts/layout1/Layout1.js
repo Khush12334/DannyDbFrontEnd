@@ -39,7 +39,7 @@ function Layout1(props) {
       {/* {config.leftSidePanel.display && <LeftSideLayout1 />} */}
 
       <div className="flex flex-auto min-w-0">
-        {/* {config.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout1 />} */}
+        {config.navbar.display && config.navbar.position === 'left' && <NavbarWrapperLayout1 />}
 
         <main id="fuse-main" className="flex flex-col flex-auto min-h-screen min-w-0 relative z-10">
           {config.toolbar.display && (
