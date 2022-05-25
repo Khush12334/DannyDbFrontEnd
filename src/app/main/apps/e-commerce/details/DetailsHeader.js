@@ -6,14 +6,15 @@ import { ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { selectMainTheme } from 'app/store/fuse/settingsSlice';
 import { setProductsSearchText } from '../store/productsSlice';
 
-function ProductsHeader(props) {
+function DetailsHeader(props) {
   const dispatch = useDispatch();
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.products.searchText);
   const mainTheme = useSelector(selectMainTheme);
+  const routeParams = useParams();
 
   return (
     <div className="flex flex-1 w-full items-center justify-between">
@@ -33,7 +34,7 @@ function ProductsHeader(props) {
           delay={300}
           className="hidden sm:flex text-16 md:text-24 mx-12 font-semibold"
         >
-          Lorum Ipsum
+          {routeParams.detailsName.replace(/_/g, ' ').toUpperCase()}
         </Typography>
       </div>
 
@@ -80,4 +81,4 @@ function ProductsHeader(props) {
   );
 }
 
-export default ProductsHeader;
+export default DetailsHeader;

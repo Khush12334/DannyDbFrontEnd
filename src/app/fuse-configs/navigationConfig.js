@@ -63,6 +63,13 @@ const navigationConfig = [
             end: true,
           },
           {
+            id: 'e-commerce-table-detail',
+            title: 'Product Detail',
+            type: 'item',
+            url: 'apps/e-commerce/details/ginnie_data',
+            end: true
+          },
+          {
             id: 'e-commerce-product-detail',
             title: 'Product Detail',
             type: 'item',

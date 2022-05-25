@@ -275,24 +275,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import withRouter from '@fuse/core/withRouter';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { getProducts, selectProducts } from '../store/productsSlice';
-import ProductsTableHead from './ProductsTableHead';
+import DetailsTableHead from './DetailsTableHead';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-function ProductsTable(props) {
+function DetailsTable(props) {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.products.searchText);
   const user = useSelector(({ auth }) => auth.user);
+  const routeParams = useParams();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState([]);
+  const [dataHeader, setDataHeader] = useState([]);
   const [filter, setFilter] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const [dataHeader, setDataHeader] = useState([]);
-
   const [order, setOrder] = useState({
     direction: 'asc',
     id: null,
@@ -324,23 +324,47 @@ function ProductsTable(props) {
   }, [searchText]);
 
   useEffect(() => {
-    console.log(user)
+    // console.log(JSON.parse(routeParams.detailsName))
+    // setDataHeader(JSON.parse(routeParams.detailsName))
     fetchTables()
   }, [])
 
   const fetchTables = () => {
+    setLoading(true)
     let formdata = new FormData();
-    formdata.append("id", user?.data?.id)
-    axios.post("https://dannydb.wirelesswavestx.com/dbtables", formdata, {
+    formdata.append("id", 1)
+    formdata.append("table_name", routeParams.detailsName)
+    axios.post("https://dannydb.wirelesswavestx.com/gettable", formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
     }).then(result => {
-      setLoading(false)
       console.log(result.data.data)
-      setData(result.data.data.concat())
-      setFilter(result.data.data.concat())
+      if (result.status == 200) {
+        setLoading(false)
+        Object.keys(result.data.data.data[0]).forEach(e => {
+          const str2 = e.charAt(0).toUpperCase() + e.slice(1);
+          dataHeader.push(
+            {
+              id: e,
+              align: 'left',
+              disablePadding: false,
+              label: str2.replace(/_/g, ' '),
+              sort: true,
+            }
+            // e
+          )
+
+          setDataHeader(dataHeader.concat())
+        })
+
+        console.log(dataHeader)
+        setData(result.data.data.data.concat())
+        setFilter(result.data.data.data.concat())
+      } else {
+        setLoading(false)
+      }
     })
   }
 
@@ -371,7 +395,7 @@ function ProductsTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/apps/e-commerce/details/${item.table_name}`);
+    // props.navigate(`/apps/e-commerce/products/${item.id}/${item.handle}`);
   }
 
   function handleCheck(event, id) {
@@ -424,8 +448,9 @@ function ProductsTable(props) {
     <div className="w-full flex flex-col">
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-          <ProductsTableHead
+          <DetailsTableHead
             // selectedProductIds={selected}
+            headers={dataHeader}
             order={order}
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
@@ -453,7 +478,8 @@ function ProductsTable(props) {
               // )
               data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n, index) => {
-                  // const isSelected = selected.indexOf(n.id) !== -1
+                  // const isSelected = selected.indexOf(n.id) !== -1;
+                  console.log(n)
                   return (
                     <TableRow
                       className="h-72 cursor-pointer"
@@ -493,10 +519,17 @@ function ProductsTable(props) {
                         />
                       )}
                     </TableCell> */}
+                      {
+                        dataHeader.map(e => {
 
-                      <TableCell className="p-4 md:p-16" component="th" scope="row">
-                        {n.table_name.replace(/_/g, ' ').toUpperCase()}
-                      </TableCell>
+                          return (
+                            <TableCell className="p-4 md:p-16" component="th" scope="row">
+                              {n[e.id]}
+                            </TableCell>
+                          )
+                        })
+                      }
+
 
                       {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
                       {n.categories.join(', ')}
@@ -552,4 +585,4 @@ function ProductsTable(props) {
   );
 }
 
-export default withRouter(ProductsTable);
+export default withRouter(DetailsTable);
