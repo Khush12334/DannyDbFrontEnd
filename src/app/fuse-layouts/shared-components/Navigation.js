@@ -22,7 +22,7 @@ function Navigation(props) {
 
   useEffect(() => {
     let arr = [
-      { id: 'e-commerce-products', title: 'Dashboard', type: 'item', url: 'apps/e-commerce/products', end: true }
+      { id: 'e-commerce-products', title: 'Dashboard', type: 'item', url: 'apps/mortgage/products', end: true }
     ]
     setSideMenuList(arr.concat())
 
@@ -47,7 +47,7 @@ function Navigation(props) {
         <Typography component="span" className="font-semibold flex">
           {user.data.displayName}
         </Typography>
-        <Typography className="text-11 font-medium capitalize" color="textSecondary">
+        <Typography className="text-11 font-medium " color="textSecondary">
           {user.data.email.toString()}
         </Typography>
 

@@ -132,7 +132,7 @@ function Product(props) {
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/apps/e-commerce/products"
+          to="/apps/mortgage/products"
           color="inherit"
         >
           Go to Products Page

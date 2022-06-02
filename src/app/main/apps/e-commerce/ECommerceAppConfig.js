@@ -6,6 +6,7 @@ const Products = lazy(() => import('./products/Products'));
 const Order = lazy(() => import('./order/Order'));
 const Orders = lazy(() => import('./orders/Orders'));
 const Details = lazy(() => import('./details/Details'));
+const Update = lazy(() => import('./Update/Update'));
 
 const ECommerceAppConfig = {
   settings: {
@@ -13,27 +14,31 @@ const ECommerceAppConfig = {
   },
   routes: [
     {
-      path: 'apps/e-commerce/products',
+      path: 'apps/mortgage/products',
       element: <Products />,
     },
     {
-      path: 'apps/e-commerce/details/:detailsName/*',
+      path: 'apps/mortgage/details/:detailsName/*',
       element: <Details />,
     },
     {
-      path: 'apps/e-commerce/products/:productId/*',
+      path: 'apps/mortgage/products/:productId/*',
       element: <Product />,
     },
     {
-      path: 'apps/e-commerce/orders',
+      path: 'apps/mortgage/orders',
       element: <Orders />,
     },
     {
-      path: 'apps/e-commerce/orders/:orderId',
+      path: 'apps/mortgage/orders/:orderId',
       element: <Order />,
     },
     {
-      path: 'apps/e-commerce',
+      path: 'apps/mortgage/update',
+      element: <Update />,
+    },
+    {
+      path: 'apps/mortgage',
       element: <Navigate to="products" />,
     },
   ],

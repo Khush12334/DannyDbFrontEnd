@@ -62,6 +62,54 @@ export const submitLogin =
       //   });
     };
 
+export const submitUpdate =
+  (user, { displayName, email, password }) =>
+    async (dispatch) => {
+      let formdata = new FormData();
+      formdata.append("id", user.data.id)
+      formdata.append("name", displayName)
+      formdata.append("email", email)
+      formdata.append("password", password)
+      axios.post("https://dannydb.wirelesswavestx.com/updateprofile", formdata, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      }).then(result => {
+        console.log(result)
+        if (result.status == 200) {
+          let res = []
+          res['email'] = email
+          res['password'] = password
+          res['displayName'] = displayName
+          res['photoURL'] = ""
+          res['settings'] = {}
+          res['shortcuts'] = []
+          res['isLogin'] = true
+
+          console.log(res)
+          dispatch(setUserData({
+            data: res,
+            role: "admin"
+          }));
+
+
+        }
+      }).catch((e) => {
+        console.log(e.response)
+        // return dispatch(loginError(
+        //   [
+        //     {
+        //       message: "Check your email address",
+        //       type: "email",
+        //     }, {
+        //       message: "Check your password",
+        //       type: "password",
+        //     }
+        //   ]
+        // ));
+      })
+    };
 export const submitLoginWithFireBase =
   ({ email, password }) =>
     async (dispatch) => {

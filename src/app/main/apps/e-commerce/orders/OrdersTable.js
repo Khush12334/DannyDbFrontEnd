@@ -72,7 +72,7 @@ function OrdersTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/apps/e-commerce/orders/${item.id}`);
+    props.navigate(`/apps/mortgage/orders/${item.id}`);
   }
 
   function handleCheck(event, id) {

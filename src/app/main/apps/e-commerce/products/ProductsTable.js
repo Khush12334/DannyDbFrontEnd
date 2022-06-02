@@ -371,7 +371,7 @@ function ProductsTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/apps/e-commerce/details/${item.table_name}`);
+    props.navigate(`/apps/mortgage/details/${item.table_name}`);
   }
 
   function handleCheck(event, id) {

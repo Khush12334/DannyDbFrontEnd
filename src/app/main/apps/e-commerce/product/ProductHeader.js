@@ -26,7 +26,7 @@ function ProductHeader(props) {
 
   function handleRemoveProduct() {
     dispatch(removeProduct()).then(() => {
-      navigate('/apps/e-commerce/products');
+      navigate('/apps/mortgage/products');
     });
   }
 
@@ -41,7 +41,7 @@ function ProductHeader(props) {
             className="flex items-center sm:mb-12"
             component={Link}
             role="button"
-            to="/apps/e-commerce/products"
+            to="/apps/mortgage/products"
             color="inherit"
           >
             <Icon className="text-20">

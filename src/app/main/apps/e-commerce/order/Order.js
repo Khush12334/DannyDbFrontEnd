@@ -71,7 +71,7 @@ function Order(props) {
           className="mt-24"
           component={Link}
           variant="outlined"
-          to="/apps/e-commerce/orders"
+          to="/apps/mortgage/orders"
           color="inherit"
         >
           Go to Orders Page
@@ -94,7 +94,7 @@ function Order(props) {
                   className="flex items-center sm:mb-12"
                   component={Link}
                   role="button"
-                  to="/apps/e-commerce/orders"
+                  to="/apps/mortgage/orders"
                   color="inherit"
                 >
                   <Icon className="text-20">
