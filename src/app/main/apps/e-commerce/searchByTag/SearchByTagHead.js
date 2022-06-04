@@ -10,7 +10,7 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Tooltip from '@mui/material/Tooltip';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box } from '@mui/system';
 import TableHead from '@mui/material/TableHead';
@@ -61,18 +61,13 @@ const rows = [
   // },
 ];
 
-function DetailsTableHead(props) {
+function SearchByTagHead(props) {
   const { selectedProductIds, headers } = props;
   // const numSelected = selectedProductIds.length;
 
   // const [selectedProductsMenu, setSelectedProductsMenu] = useState(null);
 
-
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log(headers, "props.headers")
-  }, [])
 
   const createSortHandler = (property) => (event) => {
     props.onRequestSort(event, property);
@@ -89,8 +84,6 @@ function DetailsTableHead(props) {
   return (
     <TableHead>
       <TableRow className="h-48 sm:h-64">
-        <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
-        </TableCell>
         {/* <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < props.rowCount}
@@ -137,7 +130,6 @@ function DetailsTableHead(props) {
           )}
         </TableCell> */}
         {headers.map((row) => {
-          // console.log(row)
           return (
             <TableCell
               className="p-4 md:p-16"
@@ -170,4 +162,4 @@ function DetailsTableHead(props) {
   );
 }
 
-export default DetailsTableHead;
+export default SearchByTagHead;

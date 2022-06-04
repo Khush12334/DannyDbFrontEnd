@@ -275,15 +275,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import withRouter from '@fuse/core/withRouter';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { getProducts, selectProducts } from '../store/productsSlice';
-import ProductsTableHead from './ProductsTableHead';
+import SearchByTagHead from './SearchByTagHead';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-function ProductsTable(props) {
+function SearchByTagTable(props) {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.products.searchText);
   const user = useSelector(({ auth }) => auth.user);
-
+  const routeParams = useParams();
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState([]);
@@ -331,16 +332,32 @@ function ProductsTable(props) {
   const fetchTables = () => {
     let formdata = new FormData();
     formdata.append("id", user?.data?.id)
-    axios.post("https://dannydb.wirelesswavestx.com/dbtables", formdata, {
+    formdata.append("tags_name", searchText)
+    axios.post("https://dannydb.wirelesswavestx.com/searchbytag", formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
     }).then(result => {
       setLoading(false)
-      console.log(result.data.data)
-      setData(result.data.data.concat())
-      setFilter(result.data.data.concat())
+      console.log(result)
+      Object.keys(result.data.data).forEach(e => {
+        const str2 = e.charAt(0).toUpperCase() + e.slice(1);
+        dataHeader.push(
+          {
+            id: e,
+            align: 'left',
+            disablePadding: false,
+            label: str2.replace(/_/g, ' '),
+            sort: true,
+          }
+          // e
+        )
+      })
+      data.push(result.data.data)
+      filter.push(result.data.data)
+      setData(data.concat())
+      setFilter(filter.concat())
     })
   }
 
@@ -371,12 +388,7 @@ function ProductsTable(props) {
   }
 
   function handleClick(item) {
-    props.navigate(`/apps/mortgage/details/${item}`);
-  }
-
-  const searchByTag = () => {
     props.navigate(`/apps/mortgage/details/${item.table_name}`);
-    console.log(searchText)
   }
 
   function handleCheck(event, id) {
@@ -419,7 +431,7 @@ function ProductsTable(props) {
         className="flex flex-1 items-center justify-center h-full"
       >
         <Typography color="textSecondary" variant="h5">
-          There are no products!
+          Tag Not Exist!
         </Typography>
       </motion.div>
     );
@@ -429,8 +441,9 @@ function ProductsTable(props) {
     <div className="w-full flex flex-col">
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-          <ProductsTableHead
+          <SearchByTagHead
             // selectedProductIds={selected}
+            headers={dataHeader}
             order={order}
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
@@ -456,21 +469,22 @@ function ProductsTable(props) {
               //   ],
               //   [order.direction]
               // )
-              // data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              //   .map((n, index) => {
-              // const isSelected = selected.indexOf(n.id) !== -1
-              // return (
-              <TableRow
-                className="h-72 cursor-pointer"
-                hover
-                role="checkbox"
-                // aria-checked={isSelected}
-                tabIndex={-1}
-                // key={index}
-                // selected={isSelected}
-                onClick={(event) => handleClick("ginnie_data")}
-              >
-                {/* <TableCell className="w-40 md:w-64 text-center" padding="none">
+              data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((n, index) => {
+                  // const isSelected = selected.indexOf(n.id) !== -1
+                  console.log(n)
+                  return (
+                    <TableRow
+                      className="h-72 cursor-pointer"
+                      hover
+                      role="checkbox"
+                      // aria-checked={isSelected}
+                      tabIndex={-1}
+                      key={index}
+                      // selected={isSelected}
+                      onClick={(event) => handleClick(n)}
+                    >
+                      {/* <TableCell className="w-40 md:w-64 text-center" padding="none">
                       <Checkbox
                         checked={isSelected}
                         onClick={(event) => event.stopPropagation()}
@@ -478,7 +492,7 @@ function ProductsTable(props) {
                       />
                     </TableCell> */}
 
-                {/* <TableCell
+                      {/* <TableCell
                       className="w-52 px-4 md:px-0"
                       component="th"
                       scope="row"
@@ -499,12 +513,22 @@ function ProductsTable(props) {
                       )}
                     </TableCell> */}
 
-                <TableCell className="p-4 md:p-16" component="th" scope="row">
-                  {/* {n.table_name.replace(/_/g, ' ').toUpperCase()} */}
-                  Ginnie Data
-                </TableCell>
+                      {/* <TableCell className="p-4 md:p-16" component="th" scope="row">
+                        {n[e.id]}
+                      </TableCell> */}
+                      {
+                        dataHeader.map(e => {
 
-                {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
+                          return (
+                            <TableCell className="p-4 md:p-16" component="th" scope="row">
+
+                              {n[e.id]}
+                            </TableCell>
+                          )
+                        })
+                      }
+
+                      {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
                       {n.categories.join(', ')}
                     </TableCell>
 
@@ -532,10 +556,9 @@ function ProductsTable(props) {
                         <Icon className="text-red text-20">remove_circle</Icon>
                       )}
                     </TableCell> */}
-              </TableRow>
-              // );
-              // })
-            }
+                    </TableRow>
+                  );
+                })}
           </TableBody>
         </Table>
       </FuseScrollbars>
@@ -559,4 +582,4 @@ function ProductsTable(props) {
   );
 }
 
-export default withRouter(ProductsTable);
+export default withRouter(SearchByTagTable);

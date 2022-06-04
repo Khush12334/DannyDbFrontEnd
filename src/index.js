@@ -11,7 +11,9 @@ import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(<App />, document.getElementById('root'));
-
+if (module.hot) {
+    module.hot.accept();
+}
 reportWebVitals();
 
 // If you want your app to work offline and load faster, you can change

@@ -7,6 +7,7 @@ const Order = lazy(() => import('./order/Order'));
 const Orders = lazy(() => import('./orders/Orders'));
 const Details = lazy(() => import('./details/Details'));
 const Update = lazy(() => import('./Update/Update'));
+const SearchByTag = lazy(() => import('./searchByTag/SearchByTag'));
 
 const ECommerceAppConfig = {
   settings: {
@@ -36,6 +37,10 @@ const ECommerceAppConfig = {
     {
       path: 'apps/mortgage/update',
       element: <Update />,
+    },
+    {
+      path: 'apps/mortgage/searchByTag',
+      element: <SearchByTag />,
     },
     {
       path: 'apps/mortgage',

@@ -56,6 +56,13 @@ const navigationConfig = [
         url: 'apps/mortgage',
         children: [
           {
+            id: 'e-commerce-searchByTag',
+            title: 'Products',
+            type: 'item',
+            url: 'apps/mortgage/searchByTag',
+            end: true,
+          },
+          {
             id: 'e-commerce-products',
             title: 'Products',
             type: 'item',

@@ -261,6 +261,7 @@ import FuseScrollbars from '@fuse/core/FuseScrollbars';
 import _ from '@lodash';
 import Checkbox from '@mui/material/Checkbox';
 import Icon from '@mui/material/Icon';
+import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -278,6 +279,20 @@ import { getProducts, selectProducts } from '../store/productsSlice';
 import DetailsTableHead from './DetailsTableHead';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Popover from '@mui/material/Popover';
+import * as yup from 'yup';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';;
+import InputAdornment from '@mui/material/InputAdornment';
+const schema = yup.object().shape({
+  tagName: yup.string().required('You must enter tage name')
+});
+
+const defaultValues = {
+  tagName: ''
+};
 
 function DetailsTable(props) {
   const dispatch = useDispatch();
@@ -293,10 +308,19 @@ function DetailsTable(props) {
   const [filter, setFilter] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [menu, setMenu] = useState(null);
+  const [saveTag, setSaveTag] = useState({})
   const [order, setOrder] = useState({
     direction: 'asc',
     id: null,
   });
+
+  const { control, setValue, formState, handleSubmit, reset, trigger, setError } = useForm({
+    mode: 'onChange',
+    defaultValues,
+    resolver: yupResolver(schema),
+  });
+  const { isValid, dirtyFields, errors } = formState;
 
   // useEffect(() => {
   //   dispatch(getProducts()).then(() => setLoading(false));
@@ -311,7 +335,7 @@ function DetailsTable(props) {
       let arr = [];
       setData([])
       filter.filter(val => {
-        if (val.table_name.toLowerCase().includes(searchText.toLowerCase())) {
+        if (val?.table_name?.toLowerCase().includes(searchText?.toLowerCase())) {
           console.log(val)
           arr.push(val)
           setData(arr.concat())
@@ -332,7 +356,7 @@ function DetailsTable(props) {
   const fetchTables = (url) => {
     setLoading(true)
     let formdata = new FormData();
-    formdata.append("id", 1)
+    formdata.append("id", user?.data?.id)
     formdata.append("table_name", routeParams.detailsName)
     axios.post(url, formdata, {
       headers: {
@@ -418,6 +442,11 @@ function DetailsTable(props) {
     setSelected(newSelected);
   }
 
+  const langMenuClose = () => {
+    setSaveTag({})
+    setMenu(null);
+  };
+
   function handleChangePage(event, value) {
     // let whenDataFetch = ((value + 1) * rowsPerPage) % 30
 
@@ -472,6 +501,28 @@ function DetailsTable(props) {
     );
   }
 
+  function onSubmit(model) {
+    console.log(saveTag, routeParams, user, model)
+    let formdata = new FormData();
+    formdata.append("id", user.data.id)
+    formdata.append("tablename", routeParams.detailsName)
+    formdata.append("tags_name", model.tagName)
+    formdata.append("columnname", 'id')
+    formdata.append("row_id", saveTag.id)
+    axios.post('https://dannydb.wirelesswavestx.com/savetag', formdata, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    }).then(result => {
+      if (result.status == 200) {
+        console.log(result)
+        langMenuClose()
+      }
+    })
+
+  }
+
   return (
     <div className="w-full flex flex-col">
       <FuseScrollbars className="grow overflow-x-auto">
@@ -507,7 +558,6 @@ function DetailsTable(props) {
               data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n, index) => {
                   // const isSelected = selected.indexOf(n.id) !== -1;
-                  console.log(n)
                   return (
                     <TableRow
                       className="h-72 cursor-pointer"
@@ -519,13 +569,24 @@ function DetailsTable(props) {
                       // selected={isSelected}
                       onClick={(event) => handleClick(n)}
                     >
-                      {/* <TableCell className="w-40 md:w-64 text-center" padding="none">
-                      <Checkbox
-                        checked={isSelected}
-                        onClick={(event) => event.stopPropagation()}
-                        onChange={(event) => handleCheck(event, n.id)}
-                      />
-                    </TableCell> */}
+                      <TableCell className="w-40 md:w-60 text-center" padding="none">
+                        {/* <Checkbox
+                          // checked={isSelected}
+                          // onClick={(event) => event.stopPropagation()}
+                          onChange={(event) => handleCheck(event, n.id)}
+                        /> */}
+                        <IconButton
+                          // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
+                          aria-haspopup="true"
+                          onClick={() => {
+                            setMenu(true)
+                            setSaveTag(n)
+                          }}
+                          size="small"
+                        >
+                          <p style={{ color: 'blue', fontSize: 15 }}>Save</p>
+                        </IconButton>
+                      </TableCell>
 
                       {/* <TableCell
                       className="w-52 px-4 md:px-0"
@@ -552,6 +613,7 @@ function DetailsTable(props) {
 
                           return (
                             <TableCell className="p-4 md:p-16" component="th" scope="row">
+
                               {n[e.id]}
                             </TableCell>
                           )
@@ -592,6 +654,65 @@ function DetailsTable(props) {
                 })}
           </TableBody>
         </Table>
+        <Popover
+          open={Boolean(menu)}
+          anchorEl={menu}
+          onClose={langMenuClose}
+          anchorOrigin={{
+            vertical: 'center',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          classes={{
+            paper: 'py-8',
+          }}
+        >
+          <div className="w-full mb-16" style={{ padding: 10 }} onSubmit={handleSubmit(onSubmit)}>
+            <form className="flex flex-col justify-center w-full" >
+              <p style={{ color: '#000', fontSize: 15, margin: 10, textAlign: 'center' }}>Save with tag</p>
+              <Controller
+                name="tagName"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    className="mb-16"
+                    type="text"
+                    error={!!errors.tagName}
+                    helperText={errors?.tagName?.message}
+                    label="Tag Name"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Icon className="text-20" color="action">
+                            user
+                          </Icon>
+                        </InputAdornment>
+                      ),
+                    }}
+                    variant="outlined"
+                  />
+                )}
+              />
+
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className="w-full mx-auto mt-16"
+                aria-label="LOG IN"
+                disabled={_.isEmpty(dirtyFields) || !isValid}
+                value="legacy"
+              >
+                Save
+              </Button>
+            </form>
+          </div>
+        </Popover>
       </FuseScrollbars>
 
       <TablePagination
