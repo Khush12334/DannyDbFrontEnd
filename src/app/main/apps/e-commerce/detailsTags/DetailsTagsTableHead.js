@@ -61,7 +61,7 @@ const rows = [
   // },
 ];
 
-function DetailsTableHead(props) {
+function DetailsTagsTableHead(props) {
   const { selectedProductIds, headers } = props;
   // const numSelected = selectedProductIds.length;
 
@@ -90,9 +90,6 @@ function DetailsTableHead(props) {
     <TableHead>
       <TableRow className="h-48 sm:h-64">
         <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
-        </TableCell>
-        <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
-          {"Download"}
         </TableCell>
         {/* <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
           <Checkbox
@@ -173,4 +170,4 @@ function DetailsTableHead(props) {
   );
 }
 
-export default DetailsTableHead;
+export default DetailsTagsTableHead;

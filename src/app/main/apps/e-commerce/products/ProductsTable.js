@@ -456,21 +456,21 @@ function ProductsTable(props) {
               //   ],
               //   [order.direction]
               // )
-              // data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              //   .map((n, index) => {
-              // const isSelected = selected.indexOf(n.id) !== -1
-              // return (
-              <TableRow
-                className="h-72 cursor-pointer"
-                hover
-                role="checkbox"
-                // aria-checked={isSelected}
-                tabIndex={-1}
-                // key={index}
-                // selected={isSelected}
-                onClick={(event) => handleClick("ginnie_data")}
-              >
-                {/* <TableCell className="w-40 md:w-64 text-center" padding="none">
+              data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((n, index) => {
+                  const isSelected = selected.indexOf(n.id) !== -1
+                  return (
+                    <TableRow
+                      className="h-72 cursor-pointer"
+                      hover
+                      role="checkbox"
+                      // aria-checked={isSelected}
+                      tabIndex={-1}
+                      // key={index}
+                      // selected={isSelected}
+                      onClick={(event) => handleClick("ginnie_data")}
+                    >
+                      {/* <TableCell className="w-40 md:w-64 text-center" padding="none">
                       <Checkbox
                         checked={isSelected}
                         onClick={(event) => event.stopPropagation()}
@@ -478,7 +478,7 @@ function ProductsTable(props) {
                       />
                     </TableCell> */}
 
-                {/* <TableCell
+                      {/* <TableCell
                       className="w-52 px-4 md:px-0"
                       component="th"
                       scope="row"
@@ -499,12 +499,12 @@ function ProductsTable(props) {
                       )}
                     </TableCell> */}
 
-                <TableCell className="p-4 md:p-16" component="th" scope="row">
-                  {/* {n.table_name.replace(/_/g, ' ').toUpperCase()} */}
-                  Ginnie Data
-                </TableCell>
+                      <TableCell className="p-4 md:p-16" component="th" scope="row">
+                        {n.table_name.replace(/_/g, ' ').toUpperCase()}
+                        {/* Ginnie Data */}
+                      </TableCell>
 
-                {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
+                      {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
                       {n.categories.join(', ')}
                     </TableCell>
 
@@ -532,9 +532,9 @@ function ProductsTable(props) {
                         <Icon className="text-red text-20">remove_circle</Icon>
                       )}
                     </TableCell> */}
-              </TableRow>
-              // );
-              // })
+                    </TableRow>
+                  );
+                })
             }
           </TableBody>
         </Table>

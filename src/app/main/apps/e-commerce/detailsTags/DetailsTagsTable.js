@@ -271,12 +271,12 @@ import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import Tooltip from '@mui/material/Tooltip';
+
 import { useDispatch, useSelector } from 'react-redux';
 import withRouter from '@fuse/core/withRouter';
 import FuseLoading from '@fuse/core/FuseLoading';
 import { getProducts, selectProducts } from '../store/productsSlice';
-import DetailsTableHead from './DetailsTableHead';
+import DetailsTagsTableHead from './DetailsTagsTableHead';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Popover from '@mui/material/Popover';
@@ -294,7 +294,7 @@ const defaultValues = {
   tagName: ''
 };
 
-function DetailsTable(props) {
+function DetailsTagsTable(props) {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.products.searchText);
@@ -309,7 +309,6 @@ function DetailsTable(props) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(30);
   const [menu, setMenu] = useState(null);
-  const [menuPdf, setMenuPdf] = useState(null);
   const [saveTag, setSaveTag] = useState({})
   const [total, setTotal] = useState(0)
   const [lastFetch, setLastFetch] = useState(1)
@@ -357,61 +356,42 @@ function DetailsTable(props) {
   }, [])
 
   const fetchTables = (url) => {
-    return new Promise((resolve, reject) => {
-      setLoading(true)
-      let formdata = new FormData();
-      formdata.append("id", user?.data?.id)
-      formdata.append("table_name", routeParams.detailsName)
-      axios.post(url, formdata, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        }
-      }).then(result => {
-        console.log(result)
-        if (result.status == 200) {
-          setTotal(result.data.data.total)
-          setLoading(false)
-          Object.keys(result.data.data.data[0]).forEach(e => {
-            const str2 = e.charAt(0).toUpperCase() + e.slice(1);
-            dataHeader.push(
-              {
-                id: e,
-                align: 'left',
-                disablePadding: false,
-                label: str2.replace(/_/g, ' '),
-                sort: true,
-              }
-              // e
-            )
-
-            setDataHeader(dataHeader.concat())
-          })
-
-          console.log(dataHeader)
-          setData(result.data.data.data.concat())
-          setFilter(result.data.data.data.concat())
-          resolve(result.data);
-        } else {
-          setLoading(false)
-          reject()
-        }
-      })
-    });
-  }
-
-  const sizing = (id) => {
-    console.log(id)
+    setLoading(true)
     let formdata = new FormData();
-    formdata.append("id", id)
-    formdata.append("type", "sources-and-uses")
-    axios.post(`http://18.117.231.22/sizer_api/prepare_file.php?`, formdata, {
+    formdata.append("id", user?.data?.id)
+    formdata.append("table_name", routeParams.detailsName)
+    axios.post(url, formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
     }).then(result => {
-      console.log("res", result)
+      console.log(result.data.data)
+      if (result.status == 200) {
+        setTotal(result.data.data.total)
+        setLoading(false)
+        Object.keys(result.data.data.data[0]).forEach(e => {
+          const str2 = e.charAt(0).toUpperCase() + e.slice(1);
+          dataHeader.push(
+            {
+              id: e,
+              align: 'left',
+              disablePadding: false,
+              label: str2.replace(/_/g, ' '),
+              sort: true,
+            }
+            // e
+          )
+
+          setDataHeader(dataHeader.concat())
+        })
+
+        console.log(dataHeader)
+        setData(result.data.data.data.concat())
+        setFilter(result.data.data.data.concat())
+      } else {
+        setLoading(false)
+      }
     })
   }
 
@@ -470,11 +450,8 @@ function DetailsTable(props) {
     setMenu(null);
   };
 
-  const langMenuPdfClose = () => {
-    setMenuPdf(null);
-  };
-
   function handleChangePage(event, value) {
+
     let next = value + 1
     if (lastFetch < next) {
       loadMoreData("https://dannydb.wirelesswavestx.com/gettable?page=" + next)
@@ -486,22 +463,53 @@ function DetailsTable(props) {
   const loadMoreData = (url) => {
     setLoading(true)
     let formdata = new FormData();
-    formdata.append("id", user?.data?.id)
+    formdata.append("id", 1)
     formdata.append("table_name", routeParams.detailsName)
     axios.post(url, formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
-    }).then(async result => {
-      console.log(result)
-      var arr = []
+    }).then(result => {
+      console.log(result.data.data)
       if (result.status == 200) {
         setLoading(false)
-        setData(data.concat(result.data.data.data))
-        setFilter(filter.concat(result.data.data.data))
+        setData(result.data.data.data.concat())
+        setFilter(result.data.data.data.concat())
       } else {
         setLoading(false)
+      }
+    })
+  }
+
+  const deletetags = () => {
+    console.log(saveTag)
+    let formdata = new FormData();
+    formdata.append("id", user?.data?.id)
+    formdata.append("tags_id", saveTag.tags_id)
+    axios.post('https://dannydb.wirelesswavestx.com/deletetag', formdata, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    }).then(result => {
+      console.log(result)
+
+      if (result.status == 200) {
+        setMenu(false)
+        let dataKey = data.findIndex(
+          (c) => c.tags_id === saveTag.tags_id
+        )
+
+        let filterKey = data.findIndex(
+          (c) => c.tags_id === saveTag.tags_id
+        )
+
+        data.splice(dataKey, 1)
+        setData(data.concat())
+        filter.splice(filterKey, 1)
+        setFilter(filter.concat())
+
       }
     })
   }
@@ -536,7 +544,8 @@ function DetailsTable(props) {
     formdata.append("tags_name", model.tagName)
     formdata.append("columnname", 'id')
     formdata.append("row_id", saveTag.id)
-    axios.post('https://dannydb.wirelesswavestx.com/savetag', formdata, {
+    // axios.post('https://dannydb.wirelesswavestx.com/savetag', formdata, {
+    axios.post('https://dannydb.wirelesswavestx.com/usertaglist', formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -545,7 +554,6 @@ function DetailsTable(props) {
       if (result.status == 200) {
         console.log(result)
         langMenuClose()
-        model.tagName = ''
       }
     })
 
@@ -555,7 +563,7 @@ function DetailsTable(props) {
     <div className="w-full flex flex-col">
       <FuseScrollbars className="grow overflow-x-auto">
         <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
-          <DetailsTableHead
+          <DetailsTagsTableHead
             // selectedProductIds={selected}
             headers={dataHeader}
             order={order}
@@ -598,47 +606,62 @@ function DetailsTable(props) {
                       onClick={(event) => handleClick(n)}
                     >
                       <TableCell className="w-40 md:w-60 text-center" padding="none">
-                        <Tooltip title="Save tag" placement="bottom">
-                          <IconButton
-                            onClick={() => {
-                              setMenu(true)
-                              setSaveTag(n)
-                            }}
-                            className={clsx('w-40 h-40', props.className)}
-                            size="large"
+                        {/* <Checkbox
+                          // checked={isSelected}
+                          // onClick={(event) => event.stopPropagation()}
+                          onChange={(event) => handleCheck(event, n.id)}
+                        /> */}
+                        {/* <IconButton
+                          // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
+                          aria-haspopup="true"
+                          onClick={() => {
+                            setMenu(true)
+                            setSaveTag(n)
+                          }}
+                          size="small"
+                        >
+                          <p style={{ color: 'blue', fontSize: 15 }}>Save</p>
+                        </IconButton> */}
+                        <IconButton
+                          // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
+                          aria-haspopup="true"
+                          onClick={() => {
+                            setMenu(true)
+                            setSaveTag(n)
+                          }}
+                          size="small"
+                        >
+                          <Icon
+                            component={motion.span}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1, transition: { delay: 0.2 } }}
+                            className="text-24 md:text-32"
                           >
-                            <Icon>{'save'}</Icon>
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Save notes" placement="bottom">
-                          <IconButton
-                            onClick={() => {
-                              // setMenu(true)
-                              // setSaveTag(n)
-                            }}
-                            className={clsx('w-40 h-40', props.className)}
-                            size="large"
-                          >
-                            <Icon>{'description'}</Icon>
-                          </IconButton>
-                        </Tooltip>
+                            delete
+                          </Icon>
+                        </IconButton>
                       </TableCell>
 
-                      <TableCell className="p-4 md:p-16" component="th" scope="row">
-                        <Tooltip title="Download PDF" placement="bottom">
-                          <IconButton
-                            onClick={() => {
-                              setMenuPdf(true)
-                              // setSaveTag(n)
-                            }}
-                            className={clsx('w-40 h-40', props.className)}
-                            size="large"
-                          >
-                            <Icon>{'download'}</Icon>
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-
+                      {/* <TableCell
+                      className="w-52 px-4 md:px-0"
+                      component="th"
+                      scope="row"
+                      padding="none"
+                    >
+                      {n.images.length > 0 && n.featuredImageId ? (
+                        <img
+                          className="w-full block rounded"
+                          src={_.find(n.images, { id: n.featuredImageId }).url}
+                          alt={n.name}
+                        />
+                      ) : (
+                        <img
+                          className="w-full block rounded"
+                          src="assets/images/ecommerce/product-image-placeholder.png"
+                          alt={n.name}
+                        />
+                      )}
+                    </TableCell> */}
                       {
                         dataHeader.map(e => {
 
@@ -701,100 +724,30 @@ function DetailsTable(props) {
             paper: 'py-8',
           }}
         >
-          <div className="w-full mb-16" style={{ padding: 10 }} onSubmit={handleSubmit(onSubmit)}>
-            <form className="flex flex-col justify-center w-full" >
-              <p style={{ color: '#000', fontSize: 15, margin: 10, textAlign: 'center' }}>Save with tag</p>
-              <Controller
-                name="tagName"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    className="mb-16"
-                    type="text"
-                    error={!!errors.tagName}
-                    helperText={errors?.tagName?.message}
-                    label="Tag Name"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Icon className="text-20" color="action">
-                            user
-                          </Icon>
-                        </InputAdornment>
-                      ),
-                    }}
-                    variant="outlined"
-                  />
-                )}
-              />
-
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className="w-full mx-auto mt-16"
-                aria-label="LOG IN"
-                disabled={_.isEmpty(dirtyFields) || !isValid}
-                value="legacy"
+          <div style={{ padding: 10 }}>
+            <Typography>Are you sure you want to delete?</Typography>
+            <div style={{ flexDirection: 'row', display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
+              <IconButton
+                // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
+                aria-haspopup="true"
+                onClick={langMenuClose}
+                size="small"
               >
-                Save
-              </Button>
-            </form>
-          </div>
-        </Popover>
-        <Popover
-          open={Boolean(menuPdf)}
-          anchorEl={menuPdf}
-          onClose={langMenuPdfClose}
-          anchorOrigin={{
-            vertical: 'center',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-          classes={{
-            paper: 'py-8',
-          }}
-        >
-          <div className="flex flex-col justify-center w-full mb-16" style={{ padding: 10 }} >
-
-            <Button
-              className="min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6"
-              onClick={() => {
-                setMenuPdf(false)
-                // setSaveTag(n)
-              }}
-              color="inherit"
-            >
-              <Icon>{'download'}</Icon>
-              <Typography>{"Refinance Comparison"}</Typography>
-            </Button>
-
-            <Button
-              className="min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6"
-              onClick={() => {
-                setMenuPdf(false)
-                // setSaveTag(n)
-              }}
-              color="inherit"
-            >
-              <Icon>{'download'}</Icon>
-              <Typography>{"Proposed Sources & Uses"}</Typography>
-            </Button>
-            <Button
-              className="min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6"
-              onClick={() => {
-                setMenuPdf(false)
-                // setSaveTag(n)
-              }}
-              color="inherit"
-            >
-              <Icon>{'download'}</Icon>
-              <Typography>{"Sizing"}</Typography>
-            </Button>
+                <p style={{ color: 'grey', fontSize: 15 }}>Close</p>
+              </IconButton>
+              <IconButton
+                // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
+                aria-haspopup="true"
+                onClick={() => {
+                  setMenu(true)
+                  // setSaveTag(n)
+                  deletetags()
+                }}
+                size="small"
+              >
+                <p style={{ color: 'red', fontSize: 15 }}>Delete</p>
+              </IconButton>
+            </div>
           </div>
         </Popover>
       </FuseScrollbars>
@@ -815,8 +768,8 @@ function DetailsTable(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </div >
+    </div>
   );
 }
 
-export default withRouter(DetailsTable);
+export default withRouter(DetailsTagsTable);

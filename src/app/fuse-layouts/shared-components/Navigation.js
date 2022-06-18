@@ -22,7 +22,8 @@ function Navigation(props) {
 
   useEffect(() => {
     let arr = [
-      { id: 'e-commerce-products', title: 'Dashboard', type: 'item', url: 'apps/mortgage/products', end: true }
+      { id: 'e-commerce-details', title: 'Dashboard', type: 'item', url: 'apps/mortgage/details/ginnie_data', end: true },
+      { id: 'e-commerce-tags', title: 'Tags', type: 'item', url: 'apps/mortgage/detailsTags/tags', end: true }
     ]
     setSideMenuList(arr.concat())
 

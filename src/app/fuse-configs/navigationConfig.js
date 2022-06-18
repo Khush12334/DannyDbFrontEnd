@@ -77,6 +77,13 @@ const navigationConfig = [
             end: true
           },
           {
+            id: 'e-commerce-table-detail',
+            title: 'Product Detail',
+            type: 'item',
+            url: 'apps/mortgage/detailsTags/tags',
+            end: true
+          },
+          {
             id: 'e-commerce-products',
             title: 'Udpdate',
             type: 'item',

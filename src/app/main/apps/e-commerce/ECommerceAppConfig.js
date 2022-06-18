@@ -6,6 +6,7 @@ const Products = lazy(() => import('./products/Products'));
 const Order = lazy(() => import('./order/Order'));
 const Orders = lazy(() => import('./orders/Orders'));
 const Details = lazy(() => import('./details/Details'));
+const DetailsTags = lazy(() => import('./detailsTags/DetailsTags'));
 const Update = lazy(() => import('./Update/Update'));
 const SearchByTag = lazy(() => import('./searchByTag/SearchByTag'));
 
@@ -21,6 +22,10 @@ const ECommerceAppConfig = {
     {
       path: 'apps/mortgage/details/:detailsName/*',
       element: <Details />,
+    },
+    {
+      path: 'apps/mortgage/detailsTags/:detailsName/*',
+      element: <DetailsTags />,
     },
     {
       path: 'apps/mortgage/products/:productId/*',
@@ -44,7 +49,7 @@ const ECommerceAppConfig = {
     },
     {
       path: 'apps/mortgage',
-      element: <Navigate to="products" />,
+      element: <Navigate to="details" />,
     },
   ],
 };

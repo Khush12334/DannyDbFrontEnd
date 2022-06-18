@@ -11,7 +11,7 @@ const settingsConfig = {
     toolbar: 'mainThemeLight',
     footer: 'mainThemeDark',
   },
-  loginRedirectUrl: '/apps/mortgage/products', // Default redirect url for the logged-in user
+  loginRedirectUrl: '/apps/mortgage/details/ginnie_data', // Default redirect url for the logged-in user
 };
 
 export default settingsConfig;
