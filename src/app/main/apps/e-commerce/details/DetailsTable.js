@@ -311,6 +311,7 @@ function DetailsTable(props) {
   const [menu, setMenu] = useState(null);
   const [menuPdf, setMenuPdf] = useState(null);
   const [saveTag, setSaveTag] = useState({})
+  const [showLable, setShowLabel] = useState({})
   const [total, setTotal] = useState(0)
   const [lastFetch, setLastFetch] = useState(1)
   const [order, setOrder] = useState({
@@ -338,7 +339,8 @@ function DetailsTable(props) {
       let arr = [];
       setData([])
       filter.filter(val => {
-        if (val?.table_name?.toLowerCase().includes(searchText?.toLowerCase())) {
+        console.log(val)
+        if (val?.issuername?.toLowerCase().includes(searchText?.toLowerCase())) {
           console.log(val)
           arr.push(val)
           setData(arr.concat())
@@ -603,6 +605,10 @@ function DetailsTable(props) {
                             onClick={() => {
                               setMenu(true)
                               setSaveTag(n)
+                              setShowLabel({
+                                lable: "Tag Name",
+                                head: "tag"
+                              })
                             }}
                             className={clsx('w-40 h-40', props.className)}
                             size="large"
@@ -613,8 +619,12 @@ function DetailsTable(props) {
                         <Tooltip title="Save notes" placement="bottom">
                           <IconButton
                             onClick={() => {
-                              // setMenu(true)
-                              // setSaveTag(n)
+                              setMenu(true)
+                              setSaveTag(n)
+                              setShowLabel({
+                                lable: "Enter Notes",
+                                head: "notes"
+                              })
                             }}
                             className={clsx('w-40 h-40', props.className)}
                             size="large"
@@ -703,7 +713,7 @@ function DetailsTable(props) {
         >
           <div className="w-full mb-16" style={{ padding: 10 }} onSubmit={handleSubmit(onSubmit)}>
             <form className="flex flex-col justify-center w-full" >
-              <p style={{ color: '#000', fontSize: 15, margin: 10, textAlign: 'center' }}>Save with tag</p>
+              <p style={{ color: '#000', fontSize: 15, margin: 10, textAlign: 'center' }}>{`Save with ${showLable.head}`}</p>
               <Controller
                 name="tagName"
                 control={control}
@@ -714,7 +724,7 @@ function DetailsTable(props) {
                     type="text"
                     error={!!errors.tagName}
                     helperText={errors?.tagName?.message}
-                    label="Tag Name"
+                    label={showLable.lable}
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
@@ -814,6 +824,8 @@ function DetailsTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        showLastButton={true}
+        showFirstButton={true}
       />
     </div >
   );

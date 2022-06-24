@@ -66,16 +66,16 @@ function DetailsHeader(props) {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0, transition: { delay: 0.2 } }}
       >
-        {/* <Button
+        <Button
           component={Link}
-          to="/apps/e-commerce/products/new"
+          to="/apps/mortgage/searchByTag"
           className="whitespace-nowrap"
           variant="contained"
           color="secondary"
         >
-          <span className="hidden sm:flex">Add New Product</span>
-          <span className="flex sm:hidden">New</span>
-        </Button> */}
+          <span className="hidden sm:flex">Search by tags/notes</span>
+          <span className="flex sm:hidden">Tags/Notes</span>
+        </Button>
       </motion.div>
     </div>
   );

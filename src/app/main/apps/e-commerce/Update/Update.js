@@ -41,7 +41,7 @@ function Update() {
       <motion.div
         initial={{ opacity: 0, scale: 0.6 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex w-full max-w-400 md:max-w-3xl rounded-20 shadow-2xl overflow-hidden items-center justify-center"
+        className="flex w-full max-w-400 md:max-w-3xl rounded-20 overflow-hidden items-center justify-center"
       >
         <Card
           className="Login-leftSection flex flex-col w-full max-w-sm items-center justify-center shadow-0"

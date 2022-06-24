@@ -337,7 +337,7 @@ function DetailsTagsTable(props) {
       let arr = [];
       setData([])
       filter.filter(val => {
-        if (val?.table_name?.toLowerCase().includes(searchText?.toLowerCase())) {
+        if (val?.tags_name?.toLowerCase().includes(searchText?.toLowerCase())) {
           console.log(val)
           arr.push(val)
           setData(arr.concat())
@@ -352,25 +352,25 @@ function DetailsTagsTable(props) {
   useEffect(() => {
     // console.log(JSON.parse(routeParams.detailsName))
     // setDataHeader(JSON.parse(routeParams.detailsName))
-    fetchTables("https://dannydb.wirelesswavestx.com/gettable")
+    fetchTables("https://dannydb.wirelesswavestx.com/usertaglist")
   }, [])
 
   const fetchTables = (url) => {
     setLoading(true)
     let formdata = new FormData();
     formdata.append("id", user?.data?.id)
-    formdata.append("table_name", routeParams.detailsName)
+    // formdata.append("table_name", routeParams.detailsName)
     axios.post(url, formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
     }).then(result => {
-      console.log(result.data.data)
+      console.log(result)
       if (result.status == 200) {
-        setTotal(result.data.data.total)
+        // setTotal(result.data.data.total)
         setLoading(false)
-        Object.keys(result.data.data.data[0]).forEach(e => {
+        Object.keys(result.data.data[0]).forEach(e => {
           const str2 = e.charAt(0).toUpperCase() + e.slice(1);
           dataHeader.push(
             {
@@ -387,8 +387,8 @@ function DetailsTagsTable(props) {
         })
 
         console.log(dataHeader)
-        setData(result.data.data.data.concat())
-        setFilter(result.data.data.data.concat())
+        setData(result.data.data.concat())
+        setFilter(result.data.data.concat())
       } else {
         setLoading(false)
       }
@@ -752,7 +752,7 @@ function DetailsTagsTable(props) {
         </Popover>
       </FuseScrollbars>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={total}
@@ -767,7 +767,7 @@ function DetailsTagsTable(props) {
         }}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      /> */}
     </div>
   );
 }

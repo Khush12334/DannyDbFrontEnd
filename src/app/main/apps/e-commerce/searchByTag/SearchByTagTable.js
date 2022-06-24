@@ -278,6 +278,7 @@ import { getProducts, selectProducts } from '../store/productsSlice';
 import SearchByTagHead from './SearchByTagHead';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { setProductsSearchText } from '../store/productsSlice';
 
 function SearchByTagTable(props) {
   const dispatch = useDispatch();
@@ -481,8 +482,8 @@ function SearchByTagTable(props) {
                       // aria-checked={isSelected}
                       tabIndex={-1}
                       key={index}
-                      // selected={isSelected}
-                      onClick={(event) => handleClick(n)}
+                    // selected={isSelected}
+                    // onClick={(event) => handleClick(n)}
                     >
                       {/* <TableCell className="w-40 md:w-64 text-center" padding="none">
                       <Checkbox

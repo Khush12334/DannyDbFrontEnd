@@ -88,10 +88,11 @@ function DetailsTableHead(props) {
 
   return (
     <TableHead>
+
       <TableRow className="h-48 sm:h-64">
         <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
         </TableCell>
-        <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
+        <TableCell aria-expanded={true} padding="none" className="w-40 md:w-64 text-center z-99">
           {"Download"}
         </TableCell>
         {/* <TableCell padding="none" className="w-40 md:w-64 text-center z-99">
@@ -148,6 +149,7 @@ function DetailsTableHead(props) {
               align={row.align}
               padding={row.disablePadding ? 'none' : 'normal'}
               sortDirection={props.order.id === row.id ? props.order.direction : false}
+              aria-expanded={true}
             >
               {row.sort && (
                 <Tooltip

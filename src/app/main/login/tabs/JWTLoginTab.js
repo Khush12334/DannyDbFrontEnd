@@ -117,6 +117,14 @@ function JWTLoginTab(props) {
           )}
         />
 
+        {/* <div className="flex flex-col items-center justify-center pb-32">
+          <div>
+            <Typography className="font-normal">
+              Forgot password?
+            </Typography>
+          </div>
+        </div> */}
+
         <Button
           type="submit"
           variant="contained"
