@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { submitLogin } from 'app/auth/store/loginSlice';
 import * as yup from 'yup';
 import _ from '@lodash';
+import Popover from '@mui/material/Popover';
+import ForgotPass from './forgotPassword'
 
 /**
  * Form Validation Schema
@@ -40,6 +42,7 @@ function JWTLoginTab(props) {
   const { isValid, dirtyFields, errors } = formState;
 
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotShow, setForgotShow] = useState(false)
 
   useEffect(() => {
     setValue('email', '', { shouldDirty: true, shouldValidate: true });
@@ -57,6 +60,10 @@ function JWTLoginTab(props) {
 
   function onSubmit(model) {
     dispatch(submitLogin(model));
+  }
+
+  const forgotShowClose = () => {
+    setForgotShow(false)
   }
 
   return (
@@ -117,13 +124,36 @@ function JWTLoginTab(props) {
           )}
         />
 
-        {/* <div className="flex flex-col items-center justify-center pb-32">
-          <div>
-            <Typography className="font-normal">
-              Forgot password?
-            </Typography>
-          </div>
-        </div> */}
+        {/* <Button
+          className="min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6"
+          onClick={() => {
+            console.log("Forgot password?")
+            setForgotShow(true)
+          }}
+          color="inherit"
+        >
+          <Typography className="font-normal">
+            Forgot password?
+          </Typography>
+        </Button> */}
+        {/* <Popover
+          open={Boolean(forgotShow)}
+          anchorEl={forgotShow}
+          onClose={forgotShowClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          classes={{
+            paper: 'py-8',
+          }}
+        >
+          <ForgotPass />
+        </Popover> */}
 
         <Button
           type="submit"
