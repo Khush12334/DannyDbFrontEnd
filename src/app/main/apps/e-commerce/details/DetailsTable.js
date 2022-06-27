@@ -130,8 +130,6 @@ function DetailsTable(props) {
 
             setDataHeader(dataHeader.concat())
           })
-
-          console.log(dataHeader)
           setData(result.data.data.data.concat())
           setFilter(result.data.data.data.concat())
           resolve(result.data);
@@ -170,6 +168,32 @@ function DetailsTable(props) {
       direction,
       id,
     });
+
+
+    if (order.direction == 'asc') {
+      function compare(a, b) {
+        if (a[property] < b[property]) {
+          return -1;
+        }
+        if (a[property] > b[property]) {
+          return 1;
+        }
+        return 0;
+      }
+      data.sort(compare)
+    }
+    if (order.direction == 'desc') {
+      function compare(a, b) {
+        if (a[property] > b[property]) {
+          return -1;
+        }
+        if (a[property] < b[property]) {
+          return 1;
+        }
+        return 0;
+      }
+      data.sort(compare)
+    }
   }
 
   function handleSelectAllClick(event) {
@@ -297,7 +321,7 @@ function DetailsTable(props) {
   return (
     <div className="w-full flex flex-col">
       <FuseScrollbars className="grow overflow-x-auto">
-        <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
+        <Table fixedHeader={false} style={{ tableLayout: "auto" }}>
           <DetailsTableHead
             // selectedProductIds={selected}
             headers={dataHeader}
@@ -310,22 +334,22 @@ function DetailsTable(props) {
 
           <TableBody>
             {
-              //   _.orderBy(
-              //   data,
-              //   [
-              //     (o) => {
-              //       switch (order.id) {
-              //         case 'categories': {
-              //           return o.categories[0];
-              //         }
-              //         default: {
-              //           return o[order.id];
-              //         }
-              //       }
-              //     },
-              //   ],
-              //   [order.direction]
-              // )
+              _.orderBy(
+                dataHeader,
+                [
+                  (o) => {
+                    switch (order.id) {
+                      case 'categories': {
+                        return o.categories[0];
+                      }
+                      default: {
+                        return o[order.id];
+                      }
+                    }
+                  },
+                ],
+                [order.direction]
+              ),
               data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n, index) => {
                   // const isSelected = selected.indexOf(n.id) !== -1;

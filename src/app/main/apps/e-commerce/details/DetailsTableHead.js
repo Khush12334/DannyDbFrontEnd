@@ -75,7 +75,7 @@ function DetailsTableHead(props) {
   }, [])
 
   const createSortHandler = (property) => (event) => {
-    props.onRequestSort(event, property);
+    props.onRequestSort(event.currentTarget, property);
   };
 
   function openSelectedProductsMenu(event) {

@@ -407,6 +407,31 @@ function DetailsTagsTable(props) {
       direction,
       id,
     });
+
+    if (order.direction == 'asc') {
+      function compare(a, b) {
+        if (a[property] < b[property]) {
+          return -1;
+        }
+        if (a[property] > b[property]) {
+          return 1;
+        }
+        return 0;
+      }
+      data.sort(compare)
+    }
+    if (order.direction == 'desc') {
+      function compare(a, b) {
+        if (a[property] > b[property]) {
+          return -1;
+        }
+        if (a[property] < b[property]) {
+          return 1;
+        }
+        return 0;
+      }
+      data.sort(compare)
+    }
   }
 
   function handleSelectAllClick(event) {

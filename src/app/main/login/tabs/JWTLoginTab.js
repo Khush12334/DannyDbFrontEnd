@@ -124,7 +124,7 @@ function JWTLoginTab(props) {
           )}
         />
 
-        {/* <Button
+        <Button
           className="min-h-40 min-w-40 px-0 md:px-16 py-0 md:py-6"
           onClick={() => {
             console.log("Forgot password?")
@@ -135,25 +135,25 @@ function JWTLoginTab(props) {
           <Typography className="font-normal">
             Forgot password?
           </Typography>
-        </Button> */}
-        {/* <Popover
+        </Button>
+        <Popover
           open={Boolean(forgotShow)}
           anchorEl={forgotShow}
           onClose={forgotShowClose}
           anchorOrigin={{
-            vertical: 'top',
+            vertical: 'center',
             horizontal: 'center',
           }}
           transformOrigin={{
-            vertical: 'top',
+            vertical: 'center',
             horizontal: 'center',
           }}
           classes={{
             paper: 'py-8',
           }}
         >
-          <ForgotPass />
-        </Popover> */}
+          <ForgotPass forgotShowClose={forgotShowClose} />
+        </Popover>
 
         <Button
           type="submit"

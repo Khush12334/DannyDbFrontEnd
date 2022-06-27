@@ -10,45 +10,62 @@ import * as yup from 'yup';
 import _ from '@lodash';
 import axios from 'axios';
 
-/**
- * Form Validation Schema
- */
-const schema = yup.object().shape({
-  forgotEmail: yup.string().required('You must enter a email')
-});
-
-const defaultValues = {
-  forgotEmail: ''
-};
-
 function ForgotPass(props) {
-  const { control, setValue, formState, handleSubmit, reset, trigger, setError } = useForm({
-    mode: 'onChange',
-    defaultValues,
-    resolver: yupResolver(schema),
-  });
+  const {
+    forgotShowClose
+  } = props
 
-  const { isValid, dirtyFields, errors } = formState;
-  const [forgotShow, setForgotShow] = useState(false)
+  const [status, setStatus] = useState(1)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [verifyCode, setVerifyCode] = useState('')
 
-  useEffect(() => {
-    setValue('forgotEmail', '', { shouldDirty: true, shouldValidate: true });
-  }, [reset, setValue, trigger]);
 
-  function onforgotSubmit(model) {
+  function onforgotSubmit() {
     let formdata = new FormData();
-    formdata.append("email", model.forgotEmail)
-    axios.post("https://dannydb.wirelesswavestx.com/forgotpassword", {
-      "email": model.forgotEmail
-    }, {
+    formdata.append("email", forgotEmail)
+    axios.post("https://dannydb.wirelesswavestx.com/forgetpassword", formdata, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       }
     }).then(result => {
+      if (result.status == 200) {
+        setStatus(2)
+      }
 
       console.log(result)
+
     })
+  }
+
+  function onVerifyCodeSubmit() {
+    let formdata = new FormData();
+    formdata.append("verify_token", verifyCode)
+    axios.post("https://dannydb.wirelesswavestx.com/verifycode", formdata, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    }).then(result => {
+      if (result.status == 200) {
+        setStatus(1)
+        forgotShowClose()
+        setForgotEmail('')
+        setVerifyCode('')
+      }
+
+      console.log(result)
+
+    })
+  }
+
+  const checkValidation = () => {
+    if (forgotEmail && status == 1) {
+      onforgotSubmit()
+    }
+    if (verifyCode && status == 2) {
+      onVerifyCodeSubmit()
+    }
   }
 
 
@@ -56,22 +73,53 @@ function ForgotPass(props) {
     <div className="flex flex-col justify-center w-full mb-16" style={{ padding: 10, justifyContent: "center", alignItems: 'center' }} >
 
       <Typography style={{ fontWeight: 'bold', fontSize: 20 }}>Forgot Password?</Typography>
-      <Typography>Enter your registered email below </Typography>
-      <Typography>to receive password reset instruction</Typography>
+      {
+        status == 1 ?
+          <>
+            <Typography>Enter your registered email below </Typography>
+            <Typography>to receive password reset instruction</Typography>
+          </>
+          : status == 2 ?
+            <Typography>Check Your Email</Typography>
+            : <Typography>Enter New Password</Typography>
+      }
 
-      <div className="w-full mb-16" style={{ padding: 10 }} onSubmit={handleSubmit(onforgotSubmit)}>
-        <form className="flex flex-col justify-center w-full" >
-          <Controller
-            name="forgotEmail"
-            control={control}
-            render={({ field }) => (
+
+      <div className="flex flex-col w-full mb-16 justify-center" style={{ padding: 10 }} >
+
+        {
+          status == 1 ?
+
+            <TextField
+              // {...field}
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.currentTarget.value)}
+              className="mb-16"
+              type="text"
+              error={!!errors.forgotEmail}
+              // helperText={errors?.forgotEmail?.message}
+              label={'Email'}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Icon className="text-20" color="action">
+                      email
+                    </Icon>
+                  </InputAdornment>
+                ),
+              }}
+              variant="outlined"
+            />
+            : status == 2 ?
+
               <TextField
-                {...field}
+                value={verifyCode}
+                onChange={(e) => setVerifyCode(e.currentTarget.value)}
                 className="mb-16"
                 type="text"
-                error={!!errors.forgotEmail}
-                helperText={errors?.forgotEmail?.message}
-                label={'Email'}
+                // error={!!errors.verifyCode}
+                // helperText={errors?.verifyCode?.message}
+                label={'Verify Code'}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -83,21 +131,39 @@ function ForgotPass(props) {
                 }}
                 variant="outlined"
               />
-            )}
-          />
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className="w-full mx-auto mt-16"
-            aria-label="LOG IN"
-            // disabled={_.isEmpty(dirtyFields) || !isValid}
-            value="legacy"
-          >
-            Submit
-          </Button>
-        </form>
+              :
+              <TextField
+                className="mb-16"
+                type="text"
+                // error={!!errors.verifyCode}
+                // helperText={errors?.verifyCode?.message}
+                label={'Verify Code'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Icon className="text-20" color="action">
+                        email
+                      </Icon>
+                    </InputAdornment>
+                  ),
+                }}
+                variant="outlined"
+              />
+
+        }
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          className="w-full mx-auto mt-16"
+          aria-label="LOG IN"
+          // disabled={_.isEmpty(dirtyFields) || !isValid}
+          value="legacy"
+          onClick={checkValidation}
+        >
+          Submit
+        </Button>
       </div>
 
     </div>
