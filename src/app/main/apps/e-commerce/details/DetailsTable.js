@@ -27,6 +27,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';;
 import InputAdornment from '@mui/material/InputAdornment';
+
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+
+import { DataGrid, GridRowsProp, GridColDef, renderActionsCell } from '@mui/x-data-grid';
+import { DataGridPro } from '@mui/x-data-grid-pro';
 const schema = yup.object().shape({
   tagName: yup.string().required('You must enter tage name')
 });
@@ -51,6 +58,7 @@ function DetailsTable(props) {
   const [rowsPerPage, setRowsPerPage] = useState(30);
   const [menu, setMenu] = useState(null);
   const [menuPdf, setMenuPdf] = useState(null);
+  const [showPop, setShowPop] = useState(false);
   const [saveTag, setSaveTag] = useState({})
   const [showLable, setShowLabel] = useState({})
   const [total, setTotal] = useState(0)
@@ -99,6 +107,7 @@ function DetailsTable(props) {
     fetchTables("https://dannydb.wirelesswavestx.com/gettable")
   }, [])
 
+
   const fetchTables = (url) => {
     return new Promise((resolve, reject) => {
       setLoading(true)
@@ -115,16 +124,18 @@ function DetailsTable(props) {
         if (result.status == 200) {
           setTotal(result.data.data.total)
           setLoading(false)
+          console.log(result.data.data)
           Object.keys(result.data.data.data[0]).forEach(e => {
             const str2 = e.charAt(0).toUpperCase() + e.slice(1);
             dataHeader.push(
-              {
-                id: e,
-                align: 'left',
-                disablePadding: false,
-                label: str2.replace(/_/g, ' '),
-                sort: true,
-              }
+              // {
+              //   id: e,
+              //   align: 'left',
+              //   disablePadding: false,
+              //   label: str2.replace(/_/g, ' '),
+              //   sort: true,
+              // }
+              { field: e, headerName: e, minWidth: 100, maxWidth: 200 },
               // e
             )
 
@@ -132,6 +143,7 @@ function DetailsTable(props) {
           })
           setData(result.data.data.data.concat())
           setFilter(result.data.data.data.concat())
+          console.log("dataHeader / data", dataHeader, result.data.data.data)
           resolve(result.data);
         } else {
           setLoading(false)
@@ -317,11 +329,76 @@ function DetailsTable(props) {
     })
 
   }
+  const columns: GridColDef[] = [
+    {
+      field: 'save',
+      minWidth: 100, maxWidth: 150,
+      renderCell: (params) => {
+        const onSaveClick = (e) => {
+          console.log(params)
+          setMenu(true)
+          setSaveTag(params.row)
+          setShowLabel({
+            lable: "Tag Name",
+            head: "tag"
+          })
+        };
+        const onNotesClick = (e) => {
+          console.log(params.row)
+          setMenu(true)
+          setSaveTag(params.row)
+          setShowLabel({
+            lable: "Enter Notes",
+            head: "notes"
+          })
+        }
+        return <div style={{ display: 'flex', flexDirection: 'column', margin: 10 }}>
+          <Button onClick={onSaveClick}>
+            <Icon>{'save'}</Icon>
+            <Typography>{"Save"}</Typography>
+          </Button>
+          <Button onClick={onNotesClick}>
+            <Icon>{'description'}</Icon>
+            <Typography>{"Notes"}</Typography>
+          </Button>
+        </div>;
+      }
+    },
+    {
+      field: 'download',
+      minWidth: 100, maxWidth: 150,
+      renderCell: (params) => {
+        return <Tooltip title="Download PDF" placement="bottom">
+          <Button
+            onClick={() => {
+              setMenuPdf(true)
+            }}
+            className={clsx('w-40 h-40', props.className)}
+            size="large"
+          >
+            <Icon>{'download'}</Icon>
+          </Button>
+        </Tooltip>
+      }
+    },
+    ...dataHeader
+  ];
+
 
   return (
     <div className="w-full flex flex-col">
       <FuseScrollbars className="grow overflow-x-auto">
-        <Table fixedHeader={false} style={{ tableLayout: "auto" }}>
+        <DataGridPro
+          rowHeight={80}
+          rows={data}
+          columns={columns}
+          rowsPerPageOptions={[30]}
+          page={page}
+          rowCount={total}
+          onPageChange={handleChangePage}
+          onCellClick={(e) => { console.log(e), setShowPop(true) }}
+        />
+        {/* <Table fixedHeader={false} style={{ tableLayout: "auto" }}>
           <DetailsTableHead
             // selectedProductIds={selected}
             headers={dataHeader}
@@ -404,7 +481,6 @@ function DetailsTable(props) {
                           <IconButton
                             onClick={() => {
                               setMenuPdf(true)
-                              // setSaveTag(n)
                             }}
                             className={clsx('w-40 h-40', props.className)}
                             size="large"
@@ -425,41 +501,11 @@ function DetailsTable(props) {
                           )
                         })
                       }
-
-
-                      {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-                      {n.categories.join(', ')}
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      <span>$</span>
-                      {n.priceTaxIncl}
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      {n.quantity}
-                      <i
-                        className={clsx(
-                          'inline-block w-8 h-8 rounded mx-8',
-                          n.quantity <= 5 && 'bg-red',
-                          n.quantity > 5 && n.quantity <= 25 && 'bg-orange',
-                          n.quantity > 25 && 'bg-green'
-                        )}
-                      />
-                    </TableCell>
-
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      {n.active ? (
-                        <Icon className="text-green text-20">check_circle</Icon>
-                      ) : (
-                        <Icon className="text-red text-20">remove_circle</Icon>
-                      )}
-                    </TableCell> */}
                     </TableRow>
                   );
                 })}
           </TableBody>
-        </Table>
+        </Table> */}
         <Popover
           open={Boolean(menu)}
           anchorEl={menu}
@@ -572,9 +618,10 @@ function DetailsTable(props) {
             </Button>
           </div>
         </Popover>
+
       </FuseScrollbars>
 
-      <TablePagination
+      {/* <TablePagination
         className="shrink-0 border-t-1"
         component="div"
         count={total}
@@ -591,7 +638,7 @@ function DetailsTable(props) {
         onRowsPerPageChange={handleChangeRowsPerPage}
         showLastButton={true}
         showFirstButton={true}
-      />
+      /> */}
     </div >
   );
 }

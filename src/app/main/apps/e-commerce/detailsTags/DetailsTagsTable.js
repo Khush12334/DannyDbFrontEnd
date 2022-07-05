@@ -286,6 +286,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';;
 import InputAdornment from '@mui/material/InputAdornment';
+
+
+import { DataGrid, GridRowsProp, GridColDef, renderActionsCell } from '@mui/x-data-grid';
+import { DataGridPro } from '@mui/x-data-grid-pro';
+
+
 const schema = yup.object().shape({
   tagName: yup.string().required('You must enter tage name')
 });
@@ -369,17 +375,22 @@ function DetailsTagsTable(props) {
       console.log(result)
       if (result.status == 200) {
         // setTotal(result.data.data.total)
+        console.log(result.data.data)
+
         setLoading(false)
         Object.keys(result.data.data[0]).forEach(e => {
+          console.log(e)
           const str2 = e.charAt(0).toUpperCase() + e.slice(1);
+
           dataHeader.push(
-            {
-              id: e,
-              align: 'left',
-              disablePadding: false,
-              label: str2.replace(/_/g, ' '),
-              sort: true,
-            }
+            // {
+            //   id: e,
+            //   align: 'left',
+            //   disablePadding: false,
+            //   label: str2.replace(/_/g, ' '),
+            //   sort: true,
+            // }
+            { field: e, headerName: e, minWidth: 100, maxWidth: 200 },
             // e
           )
 
@@ -522,18 +533,23 @@ function DetailsTagsTable(props) {
 
       if (result.status == 200) {
         setMenu(false)
-        let dataKey = data.findIndex(
-          (c) => c.tags_id === saveTag.tags_id
-        )
-
-        let filterKey = data.findIndex(
-          (c) => c.tags_id === saveTag.tags_id
-        )
-
-        data.splice(dataKey, 1)
+        delete data[saveTag]
         setData(data.concat())
-        filter.splice(filterKey, 1)
+        delete filter[saveTag]
         setFilter(filter.concat())
+        // console.log(data, saveTag.tags_id)
+        // let dataKey = data.findIndex(
+        //   (c) => c.tags_id === saveTag.tags_id
+        // )
+
+        // let filterKey = data.findIndex(
+        //   (c) => c.tags_id === saveTag.tags_id
+        // )
+        // console.log(typeof dataKey, typeof filterKey)
+        // data.splice(dataKey, 1)
+        // setData(data.concat())
+        // filter.splice(filterKey, 1)
+        // setFilter(filter.concat())
 
       }
     })
@@ -584,10 +600,48 @@ function DetailsTagsTable(props) {
 
   }
 
+  const columns: GridColDef[] = [
+    {
+      field: 'delete',
+      minWidth: 100, maxWidth: 150,
+      renderCell: (params) => {
+        return <Button
+          onClick={() => {
+            setMenu(true)
+            setSaveTag(params.row)
+          }}
+          className={clsx('w-40 h-40', props.className)}
+          size="large"
+        >
+          <Icon>{'delete'}</Icon>
+        </Button>
+      }
+    },
+    ...dataHeader
+  ];
+
   return (
     <div className="w-full flex flex-col">
       <FuseScrollbars className="grow overflow-x-auto">
-        <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
+
+        <DataGridPro
+          rowHeight={80}
+          rows={data}
+          columns={columns}
+          rowsPerPageOptions={[30]}
+          page={page}
+          rowCount={total}
+          getRowId={(row) => row.tags_id}
+          onPageChange={handleChangePage}
+          onCellClick={(e) => { console.log(e) }}
+        // onSelectionModelChange={({ selectionModel }) => {
+        //   const rowsToDelete = data.filter(row => row.includes(saveTag.tags_id));
+        //   // setDeletedRows(rowsToDelete);
+        // }}
+        />
+
+
+        {/* <Table stickyHeader className="min-w-xl" aria-labelledby="tableTitle">
           <DetailsTagsTableHead
             // selectedProductIds={selected}
             headers={dataHeader}
@@ -598,142 +652,143 @@ function DetailsTagsTable(props) {
             onMenuItemClick={handleDeselect}
           />
 
-          <TableBody>
-            {
-              //   _.orderBy(
-              //   data,
-              //   [
-              //     (o) => {
-              //       switch (order.id) {
-              //         case 'categories': {
-              //           return o.categories[0];
-              //         }
-              //         default: {
-              //           return o[order.id];
-              //         }
-              //       }
-              //     },
-              //   ],
-              //   [order.direction]
-              // )
-              data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((n, index) => {
-                  // const isSelected = selected.indexOf(n.id) !== -1;
-                  return (
-                    <TableRow
-                      className="h-72 cursor-pointer"
-                      hover
-                      role="checkbox"
-                      // aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={index}
-                      // selected={isSelected}
-                      onClick={(event) => handleClick(n)}
-                    >
-                      <TableCell className="w-40 md:w-60 text-center" padding="none">
-                        {/* <Checkbox
-                          // checked={isSelected}
-                          // onClick={(event) => event.stopPropagation()}
-                          onChange={(event) => handleCheck(event, n.id)}
-                        /> */}
-                        {/* <IconButton
-                          // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
-                          aria-haspopup="true"
-                          onClick={() => {
-                            setMenu(true)
-                            setSaveTag(n)
-                          }}
-                          size="small"
-                        >
-                          <p style={{ color: 'blue', fontSize: 15 }}>Save</p>
-                        </IconButton> */}
-                        <IconButton
-                          // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
-                          aria-haspopup="true"
-                          onClick={() => {
-                            setMenu(true)
-                            setSaveTag(n)
-                          }}
-                          size="small"
-                        >
-                          <Icon
-                            component={motion.span}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1, transition: { delay: 0.2 } }}
-                            className="text-24 md:text-32"
-                          >
-                            delete
-                          </Icon>
-                        </IconButton>
-                      </TableCell>
+          <TableBody> */}
+        {
+          //   _.orderBy(
+          //   data,
+          //   [
+          //     (o) => {
+          //       switch (order.id) {
+          //         case 'categories': {
+          //           return o.categories[0];
+          //         }
+          //         default: {
+          //           return o[order.id];
+          //         }
+          //       }
+          //     },
+          //   ],
+          //   [order.direction]
+          // )
+          // data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          //   .map((n, index) => {
+          //     // const isSelected = selected.indexOf(n.id) !== -1;
+          //     return (
+          //       <TableRow
+          //         className="h-72 cursor-pointer"
+          //         hover
+          //         role="checkbox"
+          //         // aria-checked={isSelected}
+          //         tabIndex={-1}
+          //         key={index}
+          //         // selected={isSelected}
+          //         onClick={(event) => handleClick(n)}
+          //       >
+          //         <TableCell className="w-40 md:w-60 text-center" padding="none">
+          //           {/* <Checkbox
+          //             // checked={isSelected}
+          //             // onClick={(event) => event.stopPropagation()}
+          //             onChange={(event) => handleCheck(event, n.id)}
+          //           /> */}
+          //           {/* <IconButton
+          //             // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
+          //             aria-haspopup="true"
+          //             onClick={() => {
+          //               setMenu(true)
+          //               setSaveTag(n)
+          //             }}
+          //             size="small"
+          //           >
+          //             <p style={{ color: 'blue', fontSize: 15 }}>Save</p>
+          //           </IconButton> */}
+          //           <IconButton
+          //             // aria-owns={selectedProductsMenu ? 'selectedProductsMenu' : null}
+          //             aria-haspopup="true"
+          //             onClick={() => {
+          //               setMenu(true)
+          //               setSaveTag(n)
+          //             }}
+          //             size="small"
+          //           >
+          //             <Icon
+          //               component={motion.span}
+          //               initial={{ scale: 0 }}
+          //               animate={{ scale: 1, transition: { delay: 0.2 } }}
+          //               className="text-24 md:text-32"
+          //             >
+          //               delete
+          //             </Icon>
+          //           </IconButton>
+          //         </TableCell>
 
-                      {/* <TableCell
-                      className="w-52 px-4 md:px-0"
-                      component="th"
-                      scope="row"
-                      padding="none"
-                    >
-                      {n.images.length > 0 && n.featuredImageId ? (
-                        <img
-                          className="w-full block rounded"
-                          src={_.find(n.images, { id: n.featuredImageId }).url}
-                          alt={n.name}
-                        />
-                      ) : (
-                        <img
-                          className="w-full block rounded"
-                          src="assets/images/ecommerce/product-image-placeholder.png"
-                          alt={n.name}
-                        />
-                      )}
-                    </TableCell> */}
-                      {
-                        dataHeader.map(e => {
+          // {/* <TableCell
+          //             className="w-52 px-4 md:px-0"
+          //             component="th"
+          //             scope="row"
+          //             padding="none"
+          //           >
+          //             {n.images.length > 0 && n.featuredImageId ? (
+          //               <img
+          //                 className="w-full block rounded"
+          //                 src={_.find(n.images, { id: n.featuredImageId }).url}
+          //                 alt={n.name}
+          //               />
+          //             ) : (
+          //               <img
+          //                 className="w-full block rounded"
+          //                 src="assets/images/ecommerce/product-image-placeholder.png"
+          //                 alt={n.name}
+          //               />
+          //             )}
+          //           </TableCell> */}
+          // {
+          //   dataHeader.map(e => {
 
-                          return (
-                            <TableCell className="p-4 md:p-16" component="th" scope="row">
+          //     return (
+          //       <TableCell className="p-4 md:p-16" component="th" scope="row">
 
-                              {n[e.id]}
-                            </TableCell>
-                          )
-                        })
-                      }
+          //         {n[e.id]}
+          //       </TableCell>
+          //     )
+          //   })
+          // }
 
 
-                      {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
-                      {n.categories.join(', ')}
-                    </TableCell>
+          //   {/* <TableCell className="p-4 md:p-16 truncate" component="th" scope="row">
+          //   {n.categories.join(', ')}
+          // </TableCell>
 
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      <span>$</span>
-                      {n.priceTaxIncl}
-                    </TableCell>
+          // <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
+          //   <span>$</span>
+          //   {n.priceTaxIncl}
+          // </TableCell>
 
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      {n.quantity}
-                      <i
-                        className={clsx(
-                          'inline-block w-8 h-8 rounded mx-8',
-                          n.quantity <= 5 && 'bg-red',
-                          n.quantity > 5 && n.quantity <= 25 && 'bg-orange',
-                          n.quantity > 25 && 'bg-green'
-                        )}
-                      />
-                    </TableCell>
+          // <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
+          //   {n.quantity}
+          //   <i
+          //     className={clsx(
+          //       'inline-block w-8 h-8 rounded mx-8',
+          //       n.quantity <= 5 && 'bg-red',
+          //       n.quantity > 5 && n.quantity <= 25 && 'bg-orange',
+          //       n.quantity > 25 && 'bg-green'
+          //     )}
+          //   />
+          // </TableCell>
 
-                    <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
-                      {n.active ? (
-                        <Icon className="text-green text-20">check_circle</Icon>
-                      ) : (
-                        <Icon className="text-red text-20">remove_circle</Icon>
-                      )}
-                    </TableCell> */}
-                    </TableRow>
-                  );
-                })}
-          </TableBody>
-        </Table>
-        <Popover
+          // <TableCell className="p-4 md:p-16" component="th" scope="row" align="right">
+          //   {n.active ? (
+          //     <Icon className="text-green text-20">check_circle</Icon>
+          //   ) : (
+          //     <Icon className="text-red text-20">remove_circle</Icon>
+          //   )}
+          // </TableCell> */}
+          //           </TableRow>
+          //         );
+          //       })}
+          // </TableBody>
+          // </Table>
+        }
+        < Popover
           open={Boolean(menu)}
           anchorEl={menu}
           onClose={langMenuClose}
@@ -793,7 +848,7 @@ function DetailsTagsTable(props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       /> */}
-    </div>
+    </div >
   );
 }
 
