@@ -3,7 +3,9 @@ import withReducer from 'app/store/withReducer';
 import { styled } from '@mui/material/styles';
 import reducer from '../store';
 import DetailsHeader from './DetailsHeader';
-import DetailsTable from './DetailsTable';
+// import DetailsTable from './DetailsTable';
+import ProductsTable from './../products/ProductsTable';
+import {  useSelector } from 'react-redux';
 
 const Root = styled(FusePageCarded)(({ theme }) => ({
   '& .FusePageCarded-header': {
@@ -24,7 +26,10 @@ const Root = styled(FusePageCarded)(({ theme }) => ({
 }));
 
 function Details() {
-  return <Root header={<DetailsHeader />} content={<DetailsTable />} innerScroll />;
+  const user = useSelector(({ auth }) => auth.user);
+
+  // return <Root header={<DetailsHeader />} content={<DetailsTable />} innerScroll />;
+  return <Root header={<DetailsHeader />} content={<ProductsTable user={user} />} innerScroll />;
 }
 
 export default withReducer('eCommerceApp', reducer)(Details);
