@@ -381,7 +381,7 @@ function DetailsTagsTable(props) {
       console.log(result)
       if (result.status == 200) {
         // setTotal(result.data.data.total)
-        console.log(result.data.data)
+        console.log(result.data.data.length)
 
         setLoading(false)
         Object.keys(result.data.data[0]).forEach(e => {

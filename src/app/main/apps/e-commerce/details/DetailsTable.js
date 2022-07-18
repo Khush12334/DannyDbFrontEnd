@@ -124,8 +124,8 @@ function DetailsTable(props) {
                 if (result.status == 200) {
                     setTotal(result.data.data.total)
                     setLoading(false)
-                    console.log(result.data.data)
-                    Object.keys(result.data.data.data[0]).forEach(e => {
+                    console.log(result.data.data[0])
+                    Object.keys(result.data.data[0]).forEach(e => {
                         const str2 = e.charAt(0).toUpperCase() + e.slice(1);
                         dataHeader.push(
                             // {
@@ -141,8 +141,8 @@ function DetailsTable(props) {
 
                         setDataHeader(dataHeader.concat())
                     })
-                    setData(result.data.data.data.concat())
-                    setFilter(result.data.data.data.concat())
+                    setData(result.data.data.concat())
+                    setFilter(result.data.data.concat())
                     console.log("dataHeader / data", dataHeader, result.data.data.data)
                     resolve(result.data);
                 } else {
