@@ -289,7 +289,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 
 import { DataGrid, GridRowsProp, GridColDef, renderActionsCell } from '@mui/x-data-grid';
-import { DataGridPro } from '@mui/x-data-grid-pro';
+import { DataGridPro, useGridApiRef } from '@mui/x-data-grid-pro';
+// import {
+//   randomInt,
+//   randomUserName,
+//   randomArrayItem,
+// } from '@mui/x-data-grid-generator';
 
 
 const schema = yup.object().shape({
@@ -301,6 +306,7 @@ const defaultValues = {
 };
 
 function DetailsTagsTable(props) {
+  // const apiRef = useGridApiRef();
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const searchText = useSelector(({ eCommerceApp }) => eCommerceApp.products.searchText);
@@ -390,7 +396,7 @@ function DetailsTagsTable(props) {
             //   label: str2.replace(/_/g, ' '),
             //   sort: true,
             // }
-            { field: e, headerName: e, minWidth: 100, maxWidth: 200 },
+            { field: e, headerName: e, minWidth: 100 },
             // e
           )
 
@@ -537,6 +543,11 @@ function DetailsTagsTable(props) {
         setData(data.concat())
         delete filter[saveTag]
         setFilter(filter.concat())
+        // const rowIds = apiRef.current.getAllRowIds();
+        // const rowId = randomArrayItem(rowIds);
+
+        // console.log(rowIds, rowId)
+        // apiRef.current.updateRows([{ id: { rowId }, _action: 'delete' }]);
         // console.log(data, saveTag.tags_id)
         // let dataKey = data.findIndex(
         //   (c) => c.tags_id === saveTag.tags_id
@@ -603,7 +614,7 @@ function DetailsTagsTable(props) {
   const columns: GridColDef[] = [
     {
       field: 'delete',
-      minWidth: 100, maxWidth: 150,
+      minWidth: 100,
       renderCell: (params) => {
         return <Button
           onClick={() => {
@@ -625,7 +636,8 @@ function DetailsTagsTable(props) {
       <FuseScrollbars className="grow overflow-x-auto">
 
         <DataGridPro
-          rowHeight={80}
+          rowHeight={25}
+          // apiRef={apiRef}
           rows={data}
           columns={columns}
           rowsPerPageOptions={[30]}
@@ -634,6 +646,8 @@ function DetailsTagsTable(props) {
           getRowId={(row) => row.tags_id}
           onPageChange={handleChangePage}
           onCellClick={(e) => { console.log(e) }}
+          style={{ fontSize: 12 }}
+          pagination={false}
         // onSelectionModelChange={({ selectionModel }) => {
         //   const rowsToDelete = data.filter(row => row.includes(saveTag.tags_id));
         //   // setDeletedRows(rowsToDelete);
