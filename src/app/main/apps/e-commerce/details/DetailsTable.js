@@ -128,15 +128,7 @@ function DetailsTable(props) {
                     Object.keys(result.data.data[0]).forEach(e => {
                         const str2 = e.charAt(0).toUpperCase() + e.slice(1);
                         dataHeader.push(
-                            // {
-                            //   id: e,
-                            //   align: 'left',
-                            //   disablePadding: false,
-                            //   label: str2.replace(/_/g, ' '),
-                            //   sort: true,
-                            // }
                             { field: e, headerName: e, minWidth: 100 },
-                            // e
                         )
 
                         setDataHeader(dataHeader.concat())
@@ -407,114 +399,6 @@ function DetailsTable(props) {
                     style={{ fontSize: 12 }}
                     pagination={false}
                 />
-                {/* <Table fixedHeader={false} style={{ tableLayout: "auto" }}>
-          <DetailsTableHead
-            // selectedProductIds={selected}
-            headers={dataHeader}
-            order={order}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={data.length}
-            onMenuItemClick={handleDeselect}
-          />
-
-          <TableBody>
-            {
-              _.orderBy(
-                dataHeader,
-                [
-                  (o) => {
-                    switch (order.id) {
-                      case 'categories': {
-                        return o.categories[0];
-                      }
-                      default: {
-                        return o[order.id];
-                      }
-                    }
-                  },
-                ],
-                [order.direction]
-              ),
-              data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((n, index) => {
-                  // const isSelected = selected.indexOf(n.id) !== -1;
-                  return (
-                    <TableRow
-                      className="h-72 cursor-pointer"
-                      hover
-                      role="checkbox"
-                      // aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={index}
-                      // selected={isSelected}
-                      onClick={(event) => handleClick(n)}
-                    >
-                      <TableCell className="w-40 md:w-60 text-center" padding="none">
-                        <Tooltip title="Save tag" placement="bottom">
-                          <IconButton
-                            onClick={() => {
-                              setMenu(true)
-                              setSaveTag(n)
-                              setShowLabel({
-                                lable: "Tag Name",
-                                head: "tag"
-                              })
-                            }}
-                            className={clsx('w-40 h-40', props.className)}
-                            size="large"
-                          >
-                            <Icon>{'save'}</Icon>
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Save notes" placement="bottom">
-                          <IconButton
-                            onClick={() => {
-                              setMenu(true)
-                              setSaveTag(n)
-                              setShowLabel({
-                                lable: "Enter Notes",
-                                head: "notes"
-                              })
-                            }}
-                            className={clsx('w-40 h-40', props.className)}
-                            size="large"
-                          >
-                            <Icon>{'description'}</Icon>
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-
-                      <TableCell className="p-4 md:p-16" component="th" scope="row">
-                        <Tooltip title="Download PDF" placement="bottom">
-                          <IconButton
-                            onClick={() => {
-                              setMenuPdf(true)
-                            }}
-                            className={clsx('w-40 h-40', props.className)}
-                            size="large"
-                          >
-                            <Icon>{'download'}</Icon>
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-
-                      {
-                        dataHeader.map(e => {
-
-                          return (
-                            <TableCell className="p-4 md:p-16" component="th" scope="row">
-
-                              {n[e.id]}
-                            </TableCell>
-                          )
-                        })
-                      }
-                    </TableRow>
-                  );
-                })}
-          </TableBody>
-        </Table> */}
                 <Popover
                     open={Boolean(menu)}
                     anchorEl={menu}
